@@ -7,12 +7,14 @@ import org.springframework.cloud.gcp.data.firestore.Document;
 
 import com.google.cloud.firestore.annotation.DocumentId;
 
-import lombok.Data;
 import lombok.ToString;
 
 @Document(collectionName = "users")
 @ToString
 public class User {
+	public User() {
+	}
+	
 	@DocumentId
 	private String id;
 	private String createdBy;

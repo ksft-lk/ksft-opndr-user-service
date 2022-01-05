@@ -12,6 +12,6 @@ public class UserInterceptorConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(userInterceptor);
+//        registry.addInterceptor(userInterceptor);
     }
 }
