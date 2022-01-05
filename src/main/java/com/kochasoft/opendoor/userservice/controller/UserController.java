@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.kochasoft.opendoor.userservice.domain.User;
 import com.kochasoft.opendoor.userservice.service.UserService;
 
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+
 
 @RestController
 @RequestMapping("/user/v1")
@@ -25,7 +27,7 @@ public class UserController {
 	private static final String FAILED = "FAILED";
 	
 	@PostMapping("/registerUser")
-	String registerUser(User user) {
+	String registerUser(@RequestBody User user) {
 		try {
 			userService.createUser(user);
 			return SUCCESS;

@@ -1,15 +1,20 @@
 package com.kochasoft.opendoor.userservice.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.kochasoft.opendoor.userservice.domain.User;
+import com.kochasoft.opendoor.userservice.repository.UserRepository;
 
 @Service
 public class UserServiceImpl implements UserService {
+	
+	@Autowired
+	UserRepository repository;
 
 	@Override
 	public void createUser(User user) {
-		// TODO Auto-generated method stub
+		repository.save(user);
 
 	}
 
