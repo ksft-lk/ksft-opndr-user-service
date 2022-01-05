@@ -10,6 +10,6 @@ public class UserController {
 
     @GetMapping("/")
     String _getUser(){
-        return "Hello World "+fireBaseKey;
+        return "Hello World ";
     }
 }
