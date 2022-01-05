@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.google.protobuf.ByteString;
+
 
 @RestController
 @RequestMapping("/user/v1")
@@ -14,7 +16,7 @@ public class UserController {
 //	UserService userService;
 //	
 	@Value("${firebase-app-key}")
-    String firebaseAppKey;
+	ByteString firebaseAppKey;
 	
 	private static final String SUCCESS = "SUCCESS";
 	private static final String FAILED = "FAILED";
