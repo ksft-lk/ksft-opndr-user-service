@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.gcp.core.DefaultGcpProjectIdProvider;
 import org.springframework.cloud.gcp.core.GcpProjectIdProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,10 +19,15 @@ import com.google.cloud.firestore.FirestoreOptions;
 @Configuration
 public class FirebaseConfig {
 
-	@Bean 
-	public GcpProjectIdProvider getGcpProjectIdProvider () {
-		return getGcpProjectIdProvider();
-	}
+	@Bean
+	  public GcpProjectIdProvider project1_IdProvider(@Value("${spring.cloud.gcp.project-id}")String prijectId) {
+	    return new DefaultGcpProjectIdProvider() {
+	      @Override
+	      public String getProjectId() {
+	        return prijectId;
+	      }
+	    };
+	  }
 	
 	@Bean
 	public Firestore getFireStore(@Value("${firebase-app-key}")String firebaseAppKey) throws IOException {
