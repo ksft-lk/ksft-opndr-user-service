@@ -7,9 +7,11 @@ import org.springframework.beans.factory.annotation.Value;
 @RestController
 public class UserController {
 
+    @Value("${firebase-app-key}")
+    String firebaseAppKey;
 
     @GetMapping("/")
     String _getUser(){
-        return "Hello World ";
+        return "Hello World "+firebaseAppKey;
     }
 }
