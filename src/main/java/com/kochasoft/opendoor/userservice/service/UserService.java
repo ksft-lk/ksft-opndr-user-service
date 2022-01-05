@@ -1,4 +1,10 @@
 package com.kochasoft.opendoor.userservice.service;
 
-public class UserService {
+import com.kochasoft.opendoor.userservice.domain.User;
+
+public interface UserService {
+	public void createUser(User user);
+	public void findUserUserById(String id);
+	public void findAllUsers();
+	public void deleteUserById(String id);
 }
