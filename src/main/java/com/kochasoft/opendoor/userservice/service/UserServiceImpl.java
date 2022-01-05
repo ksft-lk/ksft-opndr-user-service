@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import com.kochasoft.opendoor.userservice.domain.User;
 import com.kochasoft.opendoor.userservice.repository.UserRepository;
 
+import reactor.core.publisher.Mono;
+
 @Service
 public class UserServiceImpl implements UserService {
 	
@@ -14,8 +16,9 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void createUser(User user) {
-		repository.save(user);
-
+		System.out.println("user creation service method $$$$$$$$$$$$$");
+		User block = repository.save(user).block();
+		System.out.println(block);
 	}
 
 	@Override
