@@ -11,36 +11,183 @@ import lombok.Data;
 import lombok.ToString;
 
 @Document(collectionName = "users")
-@Data
 @ToString
 public class User {
 	@DocumentId
-	public String id;
-	public LocalDateTime createdBy;
-	public LocalDateTime updatedBy;
-	public LocalDateTime createdAt;
-	public LocalDateTime updatedAt;
-	public List<Action> actions;
-	public String uuid;
-	public String name;
-	public String contactEmail;
-	public String country;
-	public String email;
-	public boolean emailVerified;
-	public String mobileCountryCode;
-	public String mobileNumber;
-	public String avatar;
+	private String id;
+	private String createdBy;
+	private String updatedBy;
+	private LocalDateTime createdAt;
+	private LocalDateTime updatedAt;
+	private List<Action> actions;
+	private String uuid;
+	private String name;
+	private String contactEmail;
+	private String country;
+	private String email;
+	private boolean emailVerified;
+	private String mobileCountryCode;
+	private String mobileNumber;
+	private String avatar;
 	
 	public static class Action {
-		public String action ; 
-		public String actionBy;
-		public String actionAt;
+		private String action ; 
+		private String actionBy;
+		private String actionAt;
 
 		public Action(String action,String actionBy,String actionAt) {
 			this.action=action;
 			this.actionBy=actionBy;
 			this.actionAt=actionAt;
 		}
+
+		public String getAction() {
+			return action;
+		}
+
+		public void setAction(String action) {
+			this.action = action;
+		}
+
+		public String getActionBy() {
+			return actionBy;
+		}
+
+		public void setActionBy(String actionBy) {
+			this.actionBy = actionBy;
+		}
+
+		public String getActionAt() {
+			return actionAt;
+		}
+
+		public void setActionAt(String actionAt) {
+			this.actionAt = actionAt;
+		}
+		
+		
 	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
+
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	public LocalDateTime getUpdatedAt() {
+		return updatedAt;
+	}
+
+	public void setUpdatedAt(LocalDateTime updatedAt) {
+		this.updatedAt = updatedAt;
+	}
+
+	public List<Action> getActions() {
+		return actions;
+	}
+
+	public void setActions(List<Action> actions) {
+		this.actions = actions;
+	}
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getContactEmail() {
+		return contactEmail;
+	}
+
+	public void setContactEmail(String contactEmail) {
+		this.contactEmail = contactEmail;
+	}
+
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public boolean isEmailVerified() {
+		return emailVerified;
+	}
+
+	public void setEmailVerified(boolean emailVerified) {
+		this.emailVerified = emailVerified;
+	}
+
+	public String getMobileCountryCode() {
+		return mobileCountryCode;
+	}
+
+	public void setMobileCountryCode(String mobileCountryCode) {
+		this.mobileCountryCode = mobileCountryCode;
+	}
+
+	public String getMobileNumber() {
+		return mobileNumber;
+	}
+
+	public void setMobileNumber(String mobileNumber) {
+		this.mobileNumber = mobileNumber;
+	}
+
+	public String getAvatar() {
+		return avatar;
+	}
+
+	public void setAvatar(String avatar) {
+		this.avatar = avatar;
+	}
+	
+	
 
 }

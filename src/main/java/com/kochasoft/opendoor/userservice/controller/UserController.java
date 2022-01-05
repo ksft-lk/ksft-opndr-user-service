@@ -1,5 +1,7 @@
 package com.kochasoft.opendoor.userservice.controller;
 
+import java.time.LocalDateTime;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,10 +30,10 @@ public class UserController {
 	private static final String FAILED = "FAILED";
 	
 	@PostMapping("/registerUser")
-	String registerUser(@RequestBody UserModel userModel) {
+	String registerUser(@RequestBody User user) {
 		try {
-			User user = new User();
-			user.name=userModel.getName();
+			user.setCreatedAt(LocalDateTime.now());
+			user.setCreatedBy("APP");
 			System.out.println("user in the request : "+user.toString());
 			userService.createUser(user);
 			return SUCCESS;
