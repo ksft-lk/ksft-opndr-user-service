@@ -19,13 +19,13 @@ public class FirebaseConfig {
 	
 	public FirebaseConfig() {
 
-		FirebaseOptions options = null;
 		try {
-			InputStream serviceAccount = new ByteArrayInputStream(firebaseAppKey.getBytes());		
-			options = new FirebaseOptions.Builder()
-			  .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-			  .build();
-			FirebaseApp.initializeApp(options);
+			InputStream serviceAccount = new ByteArrayInputStream(firebaseAppKey.getBytes());	
+			FirebaseOptions.Builder builder = FirebaseOptions.builder();
+			
+			FirebaseOptions build = builder.setCredentials(GoogleCredentials.fromStream(serviceAccount))
+		    .build();
+			FirebaseApp.initializeApp(build);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
