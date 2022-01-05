@@ -29,6 +29,7 @@ public class UserController {
 	@PostMapping("/registerUser")
 	String registerUser(@RequestBody User user) {
 		try {
+			System.out.println("user in the request : "+user.toString());
 			userService.createUser(user);
 			return SUCCESS;
 		} catch (Exception e) {
