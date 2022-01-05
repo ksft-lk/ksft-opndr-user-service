@@ -19,8 +19,8 @@ public class User {
 	private String id;
 	private String createdBy;
 	private String updatedBy;
-	private LocalDateTime createdAt;
-	private LocalDateTime updatedAt;
+	private long createdAt;
+	private long updatedAt;
 	private List<Action> actions;
 	private String uuid;
 	private String name;
@@ -31,13 +31,14 @@ public class User {
 	private String mobileCountryCode;
 	private String mobileNumber;
 	private String avatar;
+	private String redeemCode;
 	
 	public static class Action {
 		private String action ; 
 		private String actionBy;
-		private String actionAt;
+		private long actionAt;
 
-		public Action(String action,String actionBy,String actionAt) {
+		public Action(String action,String actionBy,long actionAt) {
 			this.action=action;
 			this.actionBy=actionBy;
 			this.actionAt=actionAt;
@@ -59,11 +60,11 @@ public class User {
 			this.actionBy = actionBy;
 		}
 
-		public String getActionAt() {
+		public long getActionAt() {
 			return actionAt;
 		}
 
-		public void setActionAt(String actionAt) {
+		public void setActionAt(long actionAt) {
 			this.actionAt = actionAt;
 		}
 		
@@ -94,19 +95,20 @@ public class User {
 		this.updatedBy = updatedBy;
 	}
 
-	public LocalDateTime getCreatedAt() {
+
+	public long getCreatedAt() {
 		return createdAt;
 	}
 
-	public void setCreatedAt(LocalDateTime createdAt) {
+	public void setCreatedAt(long createdAt) {
 		this.createdAt = createdAt;
 	}
 
-	public LocalDateTime getUpdatedAt() {
+	public long getUpdatedAt() {
 		return updatedAt;
 	}
 
-	public void setUpdatedAt(LocalDateTime updatedAt) {
+	public void setUpdatedAt(long updatedAt) {
 		this.updatedAt = updatedAt;
 	}
 
@@ -188,6 +190,14 @@ public class User {
 
 	public void setAvatar(String avatar) {
 		this.avatar = avatar;
+	}
+
+	public String getRedeemCode() {
+		return redeemCode;
+	}
+
+	public void setRedeemCode(String redeemCode) {
+		this.redeemCode = redeemCode;
 	}
 	
 	
