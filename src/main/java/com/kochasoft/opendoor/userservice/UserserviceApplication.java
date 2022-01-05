@@ -11,7 +11,6 @@ import org.springframework.context.annotation.ComponentScan;
 @OpenAPIDefinition
 @SpringBootApplication
 @ComponentScan("com.kochasoft.opendoor.userservice")
-@EnableReactiveFirestoreRepositories
 public class UserserviceApplication {
 	
 	public static void main(String[] args) {
