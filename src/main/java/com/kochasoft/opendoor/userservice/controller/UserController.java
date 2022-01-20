@@ -73,6 +73,9 @@ public class UserController {
     public ResponseEntity<ResponseDTO> checkRegisteredUser(@PathVariable(name = "mobileNumber",required = true) String mobileNumber,
 	@PathVariable(name = "countryCode",required = true) String countryCode){
        try {
+			if(!countryCode.contains("+")){
+				countryCode="+"+countryCode;
+			}
 			User user = userService.findUserByMobileNumber(mobileNumber,countryCode);
 			boolean isRegisterd=true;
 			if(user==null){
