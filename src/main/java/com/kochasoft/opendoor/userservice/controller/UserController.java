@@ -24,14 +24,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@RequestMapping("/user/v1")
+@RequestMapping("/v1")
 @CrossOrigin
 public class UserController {
 
 	@Autowired
 	UserService userService;
 	
-	@PostMapping("/registerUser")
+	@PostMapping("/users")
 	@CrossOrigin
 	public ResponseEntity<ResponseDTO> registerUser(@RequestBody UserDTO userDTO) {
 		try {
@@ -39,7 +39,7 @@ public class UserController {
 			//Validation
 			
 			String mobileNumber = userDTO.getMobileNumber();
-			Pattern pattern = Pattern.compile("\\d{10}");
+			Pattern pattern = Pattern.compile("^\\d{5,15}$");
 			Matcher mobileNumberMatcher= pattern.matcher(mobileNumber);
 			if(!mobileNumberMatcher.matches()) {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -77,10 +77,11 @@ public class UserController {
 		}
 	}
 
-    @GetMapping("/isRegisteredUser")
-    public ResponseEntity<ResponseDTO> checkRegisteredUser(@RequestParam("mobile") String mobileNumber){
+    @GetMapping("/users")
+    public ResponseEntity<ResponseDTO> checkRegisteredUser(@RequestParam(name = "mobile",required = true) String mobileNumber,
+	@RequestParam(name = "countryCode",required = true) String countryCode){
        try {
-			User user = userService.findUserByMobileNumber(mobileNumber);
+			User user = userService.findUserByMobileNumber(mobileNumber,countryCode);
 			boolean isRegisterd=true;
 			if(user==null){
 					isRegisterd=false;
