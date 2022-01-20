@@ -28,7 +28,6 @@ public class User {
 	private String mobileCountryCode;
 	private String mobileNumber;
 	private String avatar;
-	private String redeemCode;
 	
 	public static class Action {
 		private String action ; 
@@ -189,13 +188,6 @@ public class User {
 		this.avatar = avatar;
 	}
 
-	public String getRedeemCode() {
-		return redeemCode;
-	}
-
-	public void setRedeemCode(String redeemCode) {
-		this.redeemCode = redeemCode;
-	}
 	
 	
 

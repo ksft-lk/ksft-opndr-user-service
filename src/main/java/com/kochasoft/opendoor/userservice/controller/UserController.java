@@ -53,9 +53,8 @@ public class UserController {
 			user.setCountry(userDTO.getCountry());
 			user.setEmail(userDTO.getEmail());
 			user.setMobileCountryCode(userDTO.getMobileCountryCode());
-			user.setMobileNumber(user.getMobileNumber());
-			user.setMobileCountryCode(user.getMobileCountryCode());
-			user.setRedeemCode(user.getRedeemCode());
+			user.setMobileNumber(userDTO.getMobileNumber());
+			user.setMobileCountryCode(userDTO.getMobileCountryCode());
 			
 			long epochMilli = LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
 			user.setCreatedAt(epochMilli);
