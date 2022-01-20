@@ -1,16 +1,11 @@
 package com.kochasoft.opendoor.userservice.domain;
 
-import java.time.LocalDateTime;
 import java.util.List;
-
-import org.springframework.cloud.gcp.data.firestore.Document;
 
 import com.google.cloud.firestore.annotation.DocumentId;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
+import org.springframework.cloud.gcp.data.firestore.Document;
+
 import lombok.ToString;
 
 @Document(collectionName = "users")

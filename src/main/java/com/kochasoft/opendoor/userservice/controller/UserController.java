@@ -70,7 +70,7 @@ public class UserController {
 	}
 
     @GetMapping("/users/mobile/{mobileNumber}/countryCode/{countryCode}")
-    public ResponseEntity<ResponseDTO> checkRegisteredUser(@PathVariable(name = "mobile",required = true) String mobileNumber,
+    public ResponseEntity<ResponseDTO> checkRegisteredUser(@PathVariable(name = "mobileNumber",required = true) String mobileNumber,
 	@PathVariable(name = "countryCode",required = true) String countryCode){
        try {
 			User user = userService.findUserByMobileNumber(mobileNumber,countryCode);

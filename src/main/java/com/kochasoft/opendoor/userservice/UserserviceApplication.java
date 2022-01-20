@@ -1,12 +1,10 @@
 package com.kochasoft.opendoor.userservice;
 
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
-
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.gcp.data.firestore.repository.config.EnableReactiveFirestoreRepositories;
 import org.springframework.context.annotation.ComponentScan;
+
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 
 @OpenAPIDefinition
 @SpringBootApplication
