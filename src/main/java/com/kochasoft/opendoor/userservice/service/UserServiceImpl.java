@@ -38,4 +38,10 @@ public class UserServiceImpl implements UserService {
 
 	}
 
+	@Override
+	public User findUserByMobileNumber(String mobileNumber) {
+		return repository.findByMobileNumber(mobileNumber).block();
+		
+	}
+
 }

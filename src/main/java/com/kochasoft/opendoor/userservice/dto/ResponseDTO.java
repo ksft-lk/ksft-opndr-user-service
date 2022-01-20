@@ -6,6 +6,12 @@ public class ResponseDTO {
 		responseModel.setStatus("SUCCESS");
 		return responseModel;
 	}
+
+	public static ResponseDTO sendStatus(String str) {
+		ResponseDTO responseModel = new ResponseDTO();
+		responseModel.setStatus(str);
+		return responseModel;
+	}
 	
 	public static ResponseDTO FAILED() {
 		ResponseDTO responseModel = new ResponseDTO();
@@ -23,6 +29,7 @@ public class ResponseDTO {
 	private String status;
 	private int statusCode;
 	private String description;
+	private Object result;
 
 	public String getStatus() {
 		return status;
@@ -46,6 +53,14 @@ public class ResponseDTO {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public Object getResult() {
+		return result;
+	}
+
+	public void setResult(Object result) {
+		this.result = result;
 	}
 
 	

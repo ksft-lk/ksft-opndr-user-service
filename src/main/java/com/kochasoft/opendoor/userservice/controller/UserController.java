@@ -2,12 +2,15 @@ package com.kochasoft.opendoor.userservice.controller;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.kochasoft.opendoor.userservice.domain.User;
+import com.kochasoft.opendoor.userservice.dto.ResponseDTO;
+import com.kochasoft.opendoor.userservice.dto.UserDTO;
+import com.kochasoft.opendoor.userservice.service.UserService;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -15,12 +18,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.kochasoft.opendoor.userservice.domain.User;
-import com.kochasoft.opendoor.userservice.dto.ResponseDTO;
-import com.kochasoft.opendoor.userservice.dto.UserDTO;
-import com.kochasoft.opendoor.userservice.service.UserService;
 
 
 
@@ -34,7 +33,7 @@ public class UserController {
 	
 	@PostMapping("/registerUser")
 	@CrossOrigin
-	ResponseEntity<ResponseDTO> registerUser(@RequestBody UserDTO userDTO) {
+	public ResponseEntity<ResponseDTO> registerUser(@RequestBody UserDTO userDTO) {
 		try {
 			
 			//Validation
@@ -45,6 +44,14 @@ public class UserController {
 			if(!mobileNumberMatcher.matches()) {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 						.body(ResponseDTO.FAILED(1,"Invalid Mobile Number"));
+			}
+			
+			String email = userDTO.getEmail();
+			Pattern emailPattern = Pattern.compile("/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/");
+			Matcher emailMatcher= emailPattern.matcher(email);
+			if(!emailMatcher.matches()) {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+						.body(ResponseDTO.FAILED(1,"Invalid Email"));
 			}
 			
 			User user=new User();
@@ -70,8 +77,18 @@ public class UserController {
 		}
 	}
 
-    @GetMapping("/")
-    String _getUser(){
-        return "Hello World ";
+    @GetMapping("/isRegisteredUser")
+    public ResponseEntity<ResponseDTO> checkRegisteredUser(@RequestParam("mobile") String mobileNumber){
+       try {
+			User user = userService.findUserByMobileNumber(mobileNumber);
+			boolean isRegisterd=true;
+			if(user==null){
+					isRegisterd=false;
+			}
+		   	return ResponseEntity.ok(ResponseDTO.sendStatus(isRegisterd?"YES":"NO"));
+	   } catch (Exception e) {
+		e.printStackTrace();
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseDTO.FAILED());
+	   }
     }
 }
