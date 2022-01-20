@@ -15,10 +15,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -46,14 +46,6 @@ public class UserController {
 						.body(ResponseDTO.FAILED(1,"Invalid Mobile Number"));
 			}
 			
-			String email = userDTO.getEmail();
-			Pattern emailPattern = Pattern.compile("/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/");
-			Matcher emailMatcher= emailPattern.matcher(email);
-			if(!emailMatcher.matches()) {
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-						.body(ResponseDTO.FAILED(1,"Invalid Email"));
-			}
-			
 			User user=new User();
 			user.setUuid(userDTO.getUuid());
 			user.setName(userDTO.getName());
@@ -77,9 +69,9 @@ public class UserController {
 		}
 	}
 
-    @GetMapping("/users")
-    public ResponseEntity<ResponseDTO> checkRegisteredUser(@RequestParam(name = "mobile",required = true) String mobileNumber,
-	@RequestParam(name = "countryCode",required = true) String countryCode){
+    @GetMapping("/users/mobile/{mobileNumber}/countryCode/{countryCode}")
+    public ResponseEntity<ResponseDTO> checkRegisteredUser(@PathVariable(name = "mobile",required = true) String mobileNumber,
+	@PathVariable(name = "countryCode",required = true) String countryCode){
        try {
 			User user = userService.findUserByMobileNumber(mobileNumber,countryCode);
 			boolean isRegisterd=true;
