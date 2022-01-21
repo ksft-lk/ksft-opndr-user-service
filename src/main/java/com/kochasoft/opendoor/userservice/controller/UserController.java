@@ -2,6 +2,8 @@ package com.kochasoft.opendoor.userservice.controller;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -77,10 +79,14 @@ public class UserController {
 			}
 			User user = userService.findUserByMobileNumber(mobileNumber,countryCode);
 			boolean isRegisterd=true;
+			Map<String, Object> resMap=null;
 			if(user==null){
 					isRegisterd=false;
+			}else{
+				resMap=new HashMap<>();
+				resMap.put("name", user.getName());
 			}
-		   	return ResponseEntity.ok(ResponseDTO.sendStatus(isRegisterd?"YES":"NO"));
+		   	return ResponseEntity.ok(ResponseDTO.sendStatus(isRegisterd?"YES":"NO",null,resMap));
 	   } catch (Exception e) {
 		e.printStackTrace();
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseDTO.FAILED());

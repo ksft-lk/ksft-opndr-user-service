@@ -7,9 +7,11 @@ public class ResponseDTO {
 		return responseModel;
 	}
 
-	public static ResponseDTO sendStatus(String str) {
+	public static ResponseDTO sendStatus(String status,String description, Object result) {
 		ResponseDTO responseModel = new ResponseDTO();
-		responseModel.setStatus(str);
+		responseModel.setStatus(status);
+		responseModel.setDescription(description);
+		responseModel.setResult(result);
 		return responseModel;
 	}
 	
