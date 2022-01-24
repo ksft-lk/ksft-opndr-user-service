@@ -28,6 +28,7 @@ public class User {
 	private String mobileCountryCode;
 	private String mobileNumber;
 	private String avatar;
+	private Status status;
 	
 	public static class Action {
 		private String action ; 
@@ -186,6 +187,14 @@ public class User {
 
 	public void setAvatar(String avatar) {
 		this.avatar = avatar;
+	}
+
+	public Status getStatus() {
+		return status;
+	}
+
+	public void setStatus(Status status) {
+		this.status = status;
 	}
 
 	

@@ -7,4 +7,5 @@ import reactor.core.publisher.Mono;
 
 public interface UserRepository extends FirestoreReactiveRepository<User>{
 	Mono<User> findByMobileNumberAndMobileCountryCode(String mobileNumber,String mobileCountryCode);
+	Mono<User> findByUuidAndStatus(String uuid,Status status);
 }

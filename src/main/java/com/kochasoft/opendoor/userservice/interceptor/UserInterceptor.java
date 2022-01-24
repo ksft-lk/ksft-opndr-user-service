@@ -15,7 +15,7 @@ public class UserInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        log.info("firebase authorization here");
+        //request.getHeader("name")
         return true;
     }
 }

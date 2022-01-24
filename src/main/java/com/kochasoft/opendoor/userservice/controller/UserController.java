@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.kochasoft.opendoor.userservice.domain.Status;
 import com.kochasoft.opendoor.userservice.domain.User;
 import com.kochasoft.opendoor.userservice.dto.ResponseDTO;
 import com.kochasoft.opendoor.userservice.dto.UserDTO;
@@ -78,6 +79,26 @@ public class UserController {
 				countryCode="+"+countryCode;
 			}
 			User user = userService.findUserByMobileNumber(mobileNumber,countryCode);
+			boolean isRegisterd=true;
+			Map<String, Object> resMap=null;
+			if(user==null){
+					isRegisterd=false;
+			}else{
+				resMap=new HashMap<>();
+				resMap.put("name", user.getName());
+			}
+		   	return ResponseEntity.ok(ResponseDTO.sendStatus(isRegisterd?"YES":"NO",null,resMap));
+	   } catch (Exception e) {
+		e.printStackTrace();
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseDTO.FAILED());
+	   }
+    }
+
+	@GetMapping("/users/uid/{uid}")
+    public ResponseEntity<ResponseDTO> getUser(@PathVariable(name = "uid",required = true) String uid){
+		try {
+			
+			User user = userService.findByUuid(uid,Status.ACTIVE);
 			boolean isRegisterd=true;
 			Map<String, Object> resMap=null;
 			if(user==null){

@@ -3,6 +3,7 @@ package com.kochasoft.opendoor.userservice.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.kochasoft.opendoor.userservice.domain.Status;
 import com.kochasoft.opendoor.userservice.domain.User;
 import com.kochasoft.opendoor.userservice.repository.UserRepository;
 
@@ -42,6 +43,12 @@ public class UserServiceImpl implements UserService {
 	public User findUserByMobileNumber(String mobileNumber,String mobileCountryCode) {
 		return repository.findByMobileNumberAndMobileCountryCode(mobileNumber,mobileCountryCode).block();
 		
+	}
+
+	@Override
+	public User findByUuid(String uuid, Status status) {
+		
+		return repository.findByUuidAndStatus(uuid,status).block();
 	}
 
 }
