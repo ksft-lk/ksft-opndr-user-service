@@ -1,6 +1,7 @@
 package com.kochasoft.opendoor.userservice.dto;
 
 public class UserDTO {
+	private String id;
 	private String uuid;
 	private String name;
 	private String contactEmail;
@@ -10,6 +11,14 @@ public class UserDTO {
 	private String mobileNumber;
 	private String avatar;
 	private String redeemCode;
+
+	
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}
 	public String getUuid() {
 		return uuid;
 	}

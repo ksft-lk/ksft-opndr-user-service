@@ -99,15 +99,11 @@ public class UserController {
 		try {
 			
 			User user = userService.findByUuid(uid,Status.ACTIVE);
-			boolean isRegisterd=true;
-			Map<String, Object> resMap=null;
-			if(user==null){
-					isRegisterd=false;
-			}else{
-				resMap=new HashMap<>();
-				resMap.put("name", user.getName());
-			}
-		   	return ResponseEntity.ok(ResponseDTO.sendStatus(isRegisterd?"YES":"NO",null,resMap));
+			UserDTO userDTO = new UserDTO();
+			userDTO.setId(user.getId());
+			userDTO.setName(user.getName());
+			
+		   	return ResponseEntity.ok(ResponseDTO.SUCCESS());
 	   } catch (Exception e) {
 		e.printStackTrace();
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseDTO.FAILED());
