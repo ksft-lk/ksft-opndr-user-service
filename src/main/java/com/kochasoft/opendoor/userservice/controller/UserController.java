@@ -103,7 +103,7 @@ public class UserController {
 			userDTO.setId(user.getId());
 			userDTO.setName(user.getName());
 			
-		   	return ResponseEntity.ok(ResponseDTO.SUCCESS());
+		   	return ResponseEntity.ok(ResponseDTO.SUCCESS(userDTO));
 	   } catch (Exception e) {
 		e.printStackTrace();
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseDTO.FAILED());
