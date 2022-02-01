@@ -99,6 +99,9 @@ public class UserController {
 		try {
 			
 			User user = userService.findByUuid(uid,Status.ACTIVE);
+			if(user==null){
+				return ResponseEntity.ok(ResponseDTO.FAILED(1, "user not found"));
+			}
 			UserDTO userDTO = new UserDTO();
 			userDTO.setId(user.getId());
 			userDTO.setName(user.getName());
