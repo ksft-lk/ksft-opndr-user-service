@@ -11,6 +11,7 @@ import com.kochasoft.opendoor.userservice.domain.Status;
 import com.kochasoft.opendoor.userservice.domain.User;
 import com.kochasoft.opendoor.userservice.dto.ResponseDTO;
 import com.kochasoft.opendoor.userservice.dto.UserDTO;
+import com.kochasoft.opendoor.userservice.dto.ResponseDTO.ResponseStatusCode;
 import com.kochasoft.opendoor.userservice.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +47,7 @@ public class UserController {
 			Matcher mobileNumberMatcher= pattern.matcher(mobileNumber);
 			if(!mobileNumberMatcher.matches()) {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-						.body(ResponseDTO.FAILED(1,"Invalid Mobile Number"));
+						.body(ResponseDTO.failed(ResponseStatusCode.FAIL,"Mobile Number","Invalid Mobile Number"));
 			}
 			
 			User user=new User();
@@ -58,16 +59,17 @@ public class UserController {
 			user.setMobileCountryCode(userDTO.getMobileCountryCode());
 			user.setMobileNumber(userDTO.getMobileNumber());
 			user.setMobileCountryCode(userDTO.getMobileCountryCode());
+			user.setStatus(Status.ACTIVE);
 			
 			long epochMilli = LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
 			user.setCreatedAt(epochMilli);
 			user.setCreatedBy("APP");
 			
 			userService.createUser(user);
-			return ResponseEntity.ok(ResponseDTO.SUCCESS());
+			return ResponseEntity.ok(ResponseDTO.success());
 		} catch (Exception e) {
 			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseDTO.FAILED());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseDTO.failed());
 		}
 	}
 
@@ -87,10 +89,10 @@ public class UserController {
 				resMap=new HashMap<>();
 				resMap.put("name", user.getName());
 			}
-		   	return ResponseEntity.ok(ResponseDTO.sendStatus(isRegisterd?"YES":"NO",null,resMap));
+		   	return ResponseEntity.ok(ResponseDTO.sendStatus(isRegisterd?ResponseStatusCode.YES:ResponseStatusCode.NO,resMap));
 	   } catch (Exception e) {
 		e.printStackTrace();
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseDTO.FAILED());
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseDTO.failed());
 	   }
     }
 
@@ -100,16 +102,16 @@ public class UserController {
 			
 			User user = userService.findByUuid(uid,Status.ACTIVE);
 			if(user==null){
-				return ResponseEntity.ok(ResponseDTO.FAILED(1, "user not found"));
+				return ResponseEntity.ok(ResponseDTO.failed(ResponseStatusCode.FAIL, "No active User","user not found"));
 			}
 			UserDTO userDTO = new UserDTO();
 			userDTO.setId(user.getId());
 			userDTO.setName(user.getName());
 			
-		   	return ResponseEntity.ok(ResponseDTO.SUCCESS(userDTO));
+		   	return ResponseEntity.ok(ResponseDTO.success(userDTO));
 	   } catch (Exception e) {
 		e.printStackTrace();
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseDTO.FAILED());
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseDTO.failed());
 	   }
     }
 }
