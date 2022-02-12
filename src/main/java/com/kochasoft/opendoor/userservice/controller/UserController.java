@@ -104,6 +104,32 @@ public class UserController {
 	   }
     }
 
+	@GetMapping("/users/id/{id}")
+    public ResponseEntity<ResponseDTO> getUserById(@PathVariable(name = "id",required = true) String id){
+		try {
+			
+			User user = userService.findById(id);
+			if(user==null){
+				return ResponseEntity.ok(ResponseDTO.failed(ResponseStatusCode.FAIL, "No active User","user not found"));
+			}
+			UserDTO userDTO = new UserDTO();
+			userDTO.setId(user.getId());
+			userDTO.setName(user.getName());
+			userDTO.setAvatar(user.getAvatar());
+			userDTO.setCountry(user.getCountry());
+			userDTO.setContactEmail(user.getContactEmail());
+			userDTO.setEmail(user.getEmail());
+			userDTO.setMobileCountryCode(user.getMobileCountryCode());
+			userDTO.setMobileNumber(user.getMobileNumber());
+			userDTO.setUuid(user.getUuid());
+			
+		   	return ResponseEntity.ok(ResponseDTO.success(userDTO));
+	   } catch (Exception e) {
+		e.printStackTrace();
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseDTO.failed());
+	   }
+    }
+
 	@GetMapping("/users/uid/{uid}")
     public ResponseEntity<ResponseDTO> getUser(@PathVariable(name = "uid",required = true) String uid){
 		try {

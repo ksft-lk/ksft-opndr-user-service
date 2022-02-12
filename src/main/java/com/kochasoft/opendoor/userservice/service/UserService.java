@@ -5,7 +5,7 @@ import com.kochasoft.opendoor.userservice.domain.User;
 
 public interface UserService {
 	public void createUser(User user);
-	public void findUserUserById(String id);
+	public User findById(String id);
 	public User findUserByMobileNumber(String mobileNumber,String mobileCountryCode);
 	public User findByUuid(String uuid,Status status);
 	public void findAllUsers();
