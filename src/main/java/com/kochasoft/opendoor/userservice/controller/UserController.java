@@ -3,18 +3,22 @@ package com.kochasoft.opendoor.userservice.controller;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.firebase.auth.FirebaseAuth;
 import com.kochasoft.opendoor.userservice.domain.Status;
 import com.kochasoft.opendoor.userservice.domain.User;
 import com.kochasoft.opendoor.userservice.dto.ResponseDTO;
-import com.kochasoft.opendoor.userservice.dto.UserDTO;
 import com.kochasoft.opendoor.userservice.dto.ResponseDTO.ResponseStatusCode;
+import com.kochasoft.opendoor.userservice.dto.UserDTO;
 import com.kochasoft.opendoor.userservice.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -24,6 +28,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 
 
@@ -34,6 +39,9 @@ public class UserController {
 
 	@Autowired
 	UserService userService;
+
+	@Value("${firebase-api-key}")
+	String firebaseWebAPIKey;
 	
 	@PostMapping("/users")
 	@CrossOrigin
@@ -114,4 +122,29 @@ public class UserController {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseDTO.failed());
 	   }
     }
+
+	@GetMapping("/user/{uid}/token")
+	public String getNewToken(@PathVariable String uid) {
+		Map<String, Object> params = new HashMap<>();
+		String customtoken;
+		try {
+			customtoken = FirebaseAuth.getInstance().createCustomToken(uid);
+
+			params.put("token", customtoken);
+			params.put("returnSecureToken", true);
+
+			LinkedHashMap<String, Object> postForObject = new RestTemplate().postForObject(
+					"https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyCustomToken?key="
+							+ firebaseWebAPIKey,
+					params, LinkedHashMap.class);
+
+			return new ObjectMapper().writeValueAsString(postForObject);
+
+		} catch (Exception e) {
+			
+			e.printStackTrace();
+			return e.getMessage();
+		}
+	}
+
 }
