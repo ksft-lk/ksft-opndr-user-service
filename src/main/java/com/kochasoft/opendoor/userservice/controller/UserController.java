@@ -138,7 +138,7 @@ public class UserController {
 							+ firebaseWebAPIKey,
 					params, LinkedHashMap.class);
 
-			return new ObjectMapper().writeValueAsString(postForObject);
+			return postForObject.get("idToken").toString();
 
 		} catch (Exception e) {
 			
