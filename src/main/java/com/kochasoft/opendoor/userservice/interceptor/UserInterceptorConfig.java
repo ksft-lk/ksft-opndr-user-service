@@ -14,7 +14,7 @@ public class UserInterceptorConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(userInterceptor).excludePathPatterns(
-            "/v1/users/**/token/**",
+            "/v1/users/**/token",
             "/v1/users/uid/**",
             "/v1/users/id/**",
             "/v1/users/mobile/**",

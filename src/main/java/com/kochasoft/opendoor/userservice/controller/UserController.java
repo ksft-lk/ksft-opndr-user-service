@@ -156,7 +156,7 @@ public class UserController {
 	   }
     }
 
-	@GetMapping("/user/{uid}/token")
+	@GetMapping("/users/{uid}/token")
 	public String getNewToken(@PathVariable String uid) {
 		Map<String, Object> params = new HashMap<>();
 		String customtoken;
