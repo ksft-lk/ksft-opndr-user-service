@@ -12,6 +12,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseToken;
 import com.kochasoft.opendoor.userservice.domain.Status;
 import com.kochasoft.opendoor.userservice.domain.User;
+import com.kochasoft.opendoor.userservice.dto.UserDTO;
 import com.kochasoft.opendoor.userservice.service.UserService;
 
 import org.slf4j.Logger;
@@ -54,7 +55,7 @@ public class UserInterceptor implements HandlerInterceptor {
 
         
         log.info("interceptor user : {}", user.getId());
-        request.setAttribute("user", "pala paladooo");
+        request.setAttribute("user", new UserDTO());
         return true;
     }
 
