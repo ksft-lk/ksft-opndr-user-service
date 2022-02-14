@@ -184,23 +184,23 @@ public class UserController {
 	public ResponseEntity<ResponseDTO> updateDeviceToken(@RequestAttribute("user") UserDTO user, @RequestBody TokenDTO tokenDTO){
 		try {
 
-			// User searchedUser = userService.findById(user.getId());
-			// List<Device> devices=searchedUser.getDevices()==null?new ArrayList<>():searchedUser.getDevices();
+			User searchedUser = userService.findById(user.getId());
+			List<Device> devices=searchedUser.getDevices()==null?new ArrayList<>():searchedUser.getDevices();
 
-			// Status status=tokenDTO.getLogin()?Status.ACTIVE:Status.LOGOUT;
-			// devices.forEach(a->{
-			// 	if(a.getToken().equals(tokenDTO.getToken())){
-			// 		a.setStatus(status);
-			// 	}else{
-			// 		Device device = new Device();
-			// 		device.setToken(tokenDTO.getToken());
-			// 		device.setStatus(status);
-			// 		devices.add(device);
-			// 	}
-			// });
+			Status status=tokenDTO.getLogin()?Status.ACTIVE:Status.LOGOUT;
+			devices.forEach(a->{
+				if(a.getToken().equals(tokenDTO.getToken())){
+					a.setStatus(status);
+				}else{
+					Device device = new Device();
+					device.setToken(tokenDTO.getToken());
+					device.setStatus(status);
+					devices.add(device);
+				}
+			});
 
-			// searchedUser.setDevices(devices);
-			// userService.createUser(searchedUser);
+			searchedUser.setDevices(devices);
+			userService.createUser(searchedUser);
 			
 			return ResponseEntity.ok().body(ResponseDTO.success(user));
 		} catch (Exception e) {

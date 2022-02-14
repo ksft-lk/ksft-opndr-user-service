@@ -48,14 +48,16 @@ public class UserInterceptor implements HandlerInterceptor {
         }
         
         User user = service.findByUuid(uid, Status.ACTIVE);
-        
-
         if(user==null)
             return false;
+        UserDTO userDTO = new UserDTO();
+        userDTO.setId(user.getId());
+        
+
 
         
         log.info("interceptor user : {}", user.getId());
-        request.setAttribute("user", new UserDTO());
+        request.setAttribute("user", userDTO);
         return true;
     }
 
