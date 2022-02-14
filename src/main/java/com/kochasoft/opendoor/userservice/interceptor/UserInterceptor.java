@@ -54,7 +54,7 @@ public class UserInterceptor implements HandlerInterceptor {
 
         
         log.info("interceptor user : {}", user.getId());
-        request.setAttribute("user", user);
+        request.setAttribute("user", "pala paladooo");
         return true;
     }
 
