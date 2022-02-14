@@ -29,7 +29,23 @@ public class User {
 	private String mobileNumber;
 	private String avatar;
 	private Status status;
-	
+	private List<Device> devices;
+	public static class Device{
+		private String token;
+		private Status status;
+		public Status getStatus() {
+			return status;
+		}
+		public String getToken() {
+			return token;
+		}
+		public void setToken(String token) {
+			this.token = token;
+		}
+		public void setStatus(Status status) {
+			this.status = status;
+		}
+	}
 	public static class Action {
 		private String action ; 
 		private String actionBy;
@@ -70,6 +86,14 @@ public class User {
 
 	public String getId() {
 		return id;
+	}
+
+	public List<Device> getDevices() {
+		return devices;
+	}
+
+	public void setDevices(List<Device> devices) {
+		this.devices = devices;
 	}
 
 	public void setId(String id) {

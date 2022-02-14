@@ -2,17 +2,20 @@ package com.kochasoft.opendoor.userservice.controller;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.firebase.auth.FirebaseAuth;
 import com.kochasoft.opendoor.userservice.domain.Status;
 import com.kochasoft.opendoor.userservice.domain.User;
+import com.kochasoft.opendoor.userservice.domain.User.Device;
 import com.kochasoft.opendoor.userservice.dto.ResponseDTO;
+import com.kochasoft.opendoor.userservice.dto.TokenDTO;
 import com.kochasoft.opendoor.userservice.dto.ResponseDTO.ResponseStatusCode;
 import com.kochasoft.opendoor.userservice.dto.UserDTO;
 import com.kochasoft.opendoor.userservice.service.UserService;
@@ -25,6 +28,8 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,6 +41,8 @@ import org.springframework.web.client.RestTemplate;
 @RequestMapping("/v1")
 @CrossOrigin
 public class UserController {
+
+	private static final String ERR_EXCP = "please see log for further.";
 
 	@Autowired
 	UserService userService;
@@ -170,6 +177,36 @@ public class UserController {
 			
 			e.printStackTrace();
 			return e.getMessage();
+		}
+	}
+
+	@PutMapping("/users/token")
+	public ResponseEntity<ResponseDTO> updateDeviceToken(@RequestAttribute("user") UserDTO user, @RequestBody TokenDTO tokenDTO){
+		try {
+
+			User searchedUser = userService.findById(user.getId());
+			List<Device> devices=searchedUser.getDevices()==null?new ArrayList<>():searchedUser.getDevices();
+
+			Status status=tokenDTO.getLogin()?Status.ACTIVE:Status.LOGOUT;
+			devices.forEach(a->{
+				if(a.getToken().equals(tokenDTO.getToken())){
+					a.setStatus(status);
+				}else{
+					Device device = new Device();
+					device.setToken(tokenDTO.getToken());
+					device.setStatus(status);
+					devices.add(device);
+				}
+			});
+
+			searchedUser.setDevices(devices);
+			userService.createUser(searchedUser);
+			
+			return ResponseEntity.ok().body(ResponseDTO.success());
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+			.body(ResponseDTO.failed(ResponseStatusCode.FAIL, null, ERR_EXCP));
 		}
 	}
 
