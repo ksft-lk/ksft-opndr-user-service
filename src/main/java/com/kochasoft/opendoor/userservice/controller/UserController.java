@@ -180,7 +180,7 @@ public class UserController {
 		}
 	}
 
-	@PutMapping("/users/token")
+	@PutMapping("/users/tokens")
 	public ResponseEntity<ResponseDTO> updateDeviceToken(@RequestAttribute("user") String user, @RequestBody TokenDTO tokenDTO){
 		try {
 
