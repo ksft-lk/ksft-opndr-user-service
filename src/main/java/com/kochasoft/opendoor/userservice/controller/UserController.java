@@ -181,7 +181,7 @@ public class UserController {
 	}
 
 	@PutMapping("/users/token")
-	public ResponseEntity<ResponseDTO> updateDeviceToken(@RequestAttribute("user") UserDTO user, @RequestBody TokenDTO tokenDTO){
+	public ResponseEntity<ResponseDTO> updateDeviceToken(@RequestAttribute("user") User user, @RequestBody TokenDTO tokenDTO){
 		try {
 
 			User searchedUser = userService.findById(user.getId());

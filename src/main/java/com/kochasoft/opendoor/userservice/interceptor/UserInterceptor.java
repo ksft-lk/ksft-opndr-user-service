@@ -45,11 +45,9 @@ public class UserInterceptor implements HandlerInterceptor {
         if(user==null)
             return false;
 
-        UserDTO userdto=new UserDTO();
-        userdto.setId(user.getId());
         
-        log.info("interceptor user : {}", userdto.getId());
-        request.setAttribute("user", userdto);
+        log.info("interceptor user : {}", user.getId());
+        request.setAttribute("user", user);
         return true;
     }
 }
