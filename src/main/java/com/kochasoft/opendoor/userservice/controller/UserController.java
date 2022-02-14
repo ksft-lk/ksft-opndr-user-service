@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.kochasoft.opendoor.userservice.domain.Status;
@@ -188,16 +190,21 @@ public class UserController {
 			List<Device> devices=searchedUser.getDevices()==null?new ArrayList<>():searchedUser.getDevices();
 
 			Status status=tokenDTO.getLogin()?Status.ACTIVE:Status.LOGOUT;
-			devices.forEach(a->{
-				if(a.getToken().equals(tokenDTO.getToken())){
-					a.setStatus(status);
-				}else{
-					Device device = new Device();
-					device.setToken(tokenDTO.getToken());
-					device.setStatus(status);
-					devices.add(device);
-				}
-			});
+			
+
+			List<Device> filterdDevices = devices.stream()
+			.filter(a-> a.getToken().equals(tokenDTO.getToken()))
+			.collect(Collectors.toList());
+
+			if(filterdDevices.isEmpty()){
+				Device device = new Device();
+				device.setToken(tokenDTO.getToken());
+				device.setStatus(status);
+				devices.add(device);
+			}else{
+				Device device = filterdDevices.get(0);
+				device.setStatus(status);
+			}
 
 			searchedUser.setDevices(devices);
 			userService.createUser(searchedUser);
