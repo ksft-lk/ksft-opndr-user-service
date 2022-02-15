@@ -192,19 +192,22 @@ public class UserController {
 			List<Device> devices=searchedUser.getDevices()==null?new ArrayList<>():searchedUser.getDevices();
 
 			Status status=tokenDTO.getLogin()?Status.ACTIVE:Status.LOGOUT;
-			
+			String token=tokenDTO.getToken();
+			String deviceId = tokenDTO.getDeviceId();
 
 			List<Device> filterdDevices = devices.stream()
-			.filter(a-> a.getToken().equals(tokenDTO.getToken()))
+			.filter(a-> a.getDeviceId().equals(tokenDTO.getDeviceId()))
 			.collect(Collectors.toList());
 
 			if(filterdDevices.isEmpty()){
 				Device device = new Device();
-				device.setToken(tokenDTO.getToken());
+				device.setToken(token);
 				device.setStatus(status);
+				device.setDeviceId(deviceId);
 				devices.add(device);
 			}else{
 				Device device = filterdDevices.get(0);
+				device.setToken(token);
 				device.setStatus(status);
 			}
 

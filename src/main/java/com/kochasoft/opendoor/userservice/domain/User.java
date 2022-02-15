@@ -31,10 +31,18 @@ public class User {
 	private Status status;
 	private List<Device> devices;
 	public static class Device{
+
 		private String token;
 		private Status status;
+		private String deviceId;
 		public Status getStatus() {
 			return status;
+		}
+		public String getDeviceId() {
+			return deviceId;
+		}
+		public void setDeviceId(String deviceId) {
+			this.deviceId = deviceId;
 		}
 		public String getToken() {
 			return token;
