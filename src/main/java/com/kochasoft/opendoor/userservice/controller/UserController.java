@@ -21,6 +21,7 @@ import com.kochasoft.opendoor.userservice.dto.TokenDTO;
 import com.kochasoft.opendoor.userservice.dto.ResponseDTO.ResponseStatusCode;
 import com.kochasoft.opendoor.userservice.dto.UserDTO;
 import com.kochasoft.opendoor.userservice.service.UserService;
+import com.kochasoft.opendoor.userservice.util.SingleCollector;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -195,18 +196,20 @@ public class UserController {
 			String token=tokenDTO.getToken();
 			String deviceId = tokenDTO.getDeviceId();
 
-			List<Device> filterdDevices = devices.stream()
-			.filter(a-> a.getDeviceId().equals(tokenDTO.getDeviceId()))
-			.collect(Collectors.toList());
+			Device device=null;
+			if(!devices.isEmpty()){
+				device = devices.stream()
+				.filter(a-> a.getDeviceId().equals(tokenDTO.getDeviceId()))
+				.collect(SingleCollector.collector());
+			}
 
-			if(filterdDevices.isEmpty()){
-				Device device = new Device();
+			if(device==null){
+				device = new Device();
 				device.setToken(token);
 				device.setStatus(status);
 				device.setDeviceId(deviceId);
 				devices.add(device);
 			}else{
-				Device device = filterdDevices.get(0);
 				device.setToken(token);
 				device.setStatus(status);
 			}
