@@ -1,5 +1,9 @@
 package com.kochasoft.opendoor.userservice.dto;
 
+import java.util.List;
+
+import com.kochasoft.opendoor.userservice.domain.User.Device;
+
 public class UserDTO {
 	private String id;
 	private String uuid;
@@ -11,10 +15,17 @@ public class UserDTO {
 	private String mobileNumber;
 	private String avatar;
 	private String redeemCode;
+	private List<Device> devices;
 
 	
 	public String getId() {
 		return id;
+	}
+	public List<Device> getDevices() {
+		return devices;
+	}
+	public void setDevices(List<Device> devices) {
+		this.devices = devices;
 	}
 	public void setId(String id) {
 		this.id = id;

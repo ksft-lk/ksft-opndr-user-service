@@ -77,6 +77,7 @@ public class UserController {
 			user.setMobileNumber(userDTO.getMobileNumber());
 			user.setMobileCountryCode(userDTO.getMobileCountryCode());
 			user.setStatus(Status.ACTIVE);
+			user.setDevices(userDTO.getDevices());
 			
 			long epochMilli = LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
 			user.setCreatedAt(epochMilli);
@@ -131,6 +132,7 @@ public class UserController {
 			userDTO.setMobileCountryCode(user.getMobileCountryCode());
 			userDTO.setMobileNumber(user.getMobileNumber());
 			userDTO.setUuid(user.getUuid());
+			userDTO.setDevices(user.getDevices());
 			
 		   	return ResponseEntity.ok(ResponseDTO.success(userDTO));
 	   } catch (Exception e) {
@@ -209,7 +211,7 @@ public class UserController {
 			searchedUser.setDevices(devices);
 			userService.createUser(searchedUser);
 			
-			return ResponseEntity.ok().body(ResponseDTO.success(user));
+			return ResponseEntity.ok().body(ResponseDTO.success());
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
