@@ -16,6 +16,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.kochasoft.opendoor.userservice.domain.Status;
 import com.kochasoft.opendoor.userservice.domain.User;
 import com.kochasoft.opendoor.userservice.domain.User.Device;
+import com.kochasoft.opendoor.userservice.dto.CardDTO;
+import com.kochasoft.opendoor.userservice.dto.Local;
 import com.kochasoft.opendoor.userservice.dto.ResponseDTO;
 import com.kochasoft.opendoor.userservice.dto.TokenDTO;
 import com.kochasoft.opendoor.userservice.dto.ResponseDTO.ResponseStatusCode;
@@ -52,7 +54,7 @@ public class UserController {
 
 	@Value("${firebase-api-key}")
 	String firebaseWebAPIKey;
-	
+
 	@PostMapping("/users")
 	@CrossOrigin
 	public ResponseEntity<ResponseDTO> registerUser(@RequestBody UserDTO userDTO) {
@@ -84,7 +86,15 @@ public class UserController {
 			user.setCreatedAt(epochMilli);
 			user.setCreatedBy("APP");
 			
-			userService.createUser(user);
+			User createUser = userService.createUser(user);
+
+			//create basic card
+			CardDTO cardDTO=new CardDTO();
+			Local userNameLocal = new Local();
+			userNameLocal.setEn(userDTO.getName());
+			cardDTO.setUserDisplayName(userNameLocal);
+			cardDTO.setUserId(createUser.getId());
+			
 			return ResponseEntity.ok(ResponseDTO.success());
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -218,6 +228,20 @@ public class UserController {
 			userService.createUser(searchedUser);
 			
 			return ResponseEntity.ok().body(ResponseDTO.success());
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+			.body(ResponseDTO.failed(ResponseStatusCode.FAIL, null, ERR_EXCP));
+		}
+	}
+
+
+	@CrossOrigin
+	@GetMapping("/users")
+	public ResponseEntity<ResponseDTO> getUsers(){
+		try {
+			List<User> users = userService.findAllUsers();
+			return ResponseEntity.ok().body(ResponseDTO.success(users));
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
