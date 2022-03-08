@@ -8,6 +8,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
@@ -78,6 +79,7 @@ public class SecurityFilter extends OncePerRequestFilter {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"User not found!");
 
         ObjectMapper mapper=new ObjectMapper();
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         UserDTO userDto = mapper.convertValue(user, UserDTO.class);
         log.info("user dto {}",userDto);
         
