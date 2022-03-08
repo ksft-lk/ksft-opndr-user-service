@@ -237,7 +237,7 @@ public class UserController {
 
 
 	@CrossOrigin
-	@GetMapping("/users")
+	@GetMapping("/users/all")
 	public ResponseEntity<ResponseDTO> getUsers(){
 		try {
 			List<User> users = userService.findAllUsers();
