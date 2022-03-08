@@ -47,7 +47,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User findByUuid(String uuid, Status status) {
-		
+		System.out.println("user by uuid "+uuid+" status : "+status);
 		return repository.findByUuidAndStatus(uuid,status).block();
 	}
 
