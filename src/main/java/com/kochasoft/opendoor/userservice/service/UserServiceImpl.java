@@ -50,25 +50,9 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User findByUuid(String uuid, Status status) throws Exception{
+	public User findByUuid(String uuid, Status status){
 
-		Firestore db = FirestoreClient.getFirestore();
-
-		Query qUser = db.collection("users").whereEqualTo("uuid", uuid).whereEqualTo("status", status);
-		List<QueryDocumentSnapshot> documents = qUser.get().get().getDocuments();
-
-		Query qUser1 = db.collection("users").whereEqualTo("uuid", uuid);
-
-		qUser1.get().get().getDocuments().forEach(a->{
-			User object = a.toObject(User.class);
-			System.out.println(object.getUuid());
-		});
-
-		if(!documents.isEmpty()){
-			return documents.get(0).toObject(User.class);
-		}else{
-			return null;
-		}
+		return repository.findByUuidAndStatus(uuid, status).block();
 	}
 
 }
