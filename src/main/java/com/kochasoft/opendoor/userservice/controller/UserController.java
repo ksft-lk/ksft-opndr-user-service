@@ -240,7 +240,6 @@ public class UserController {
 	@GetMapping("/users")
 	public ResponseEntity<ResponseDTO> getUsers(){
 		try {
-			System.out.println("all users");
 			List<User> users = userService.findAllUsers();
 			return ResponseEntity.ok().body(ResponseDTO.success(users));
 		} catch (Exception e) {
