@@ -66,6 +66,9 @@ public class SecurityFilter extends OncePerRequestFilter {
         }
 
         String uid = decodedToken.getUid();
+
+        log.info("logged user uid : {}",uid);
+
         User u = userService.findByUuid(uid, Status.ACTIVE);
 
         if(u==null){
