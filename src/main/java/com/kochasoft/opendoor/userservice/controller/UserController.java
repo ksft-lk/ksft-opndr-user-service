@@ -199,7 +199,7 @@ public class UserController {
 	public ResponseEntity<ResponseDTO> updateDeviceToken(@RequestAttribute("user") String uid, @RequestBody TokenDTO tokenDTO){
 		try {
 
-			User searchedUser = userService.findByUuid(uid, Status.ACTIVE);
+			User searchedUser = userService.findByUuid(uid.trim(), Status.ACTIVE);
 			List<Device> devices=searchedUser.getDevices()==null?new ArrayList<>():searchedUser.getDevices();
 
 			Status status=tokenDTO.getLogin()?Status.ACTIVE:Status.LOGOUT;
