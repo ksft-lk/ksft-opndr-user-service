@@ -196,10 +196,10 @@ public class UserController {
 	}
 
 	@PutMapping("/users/tokens")
-	public ResponseEntity<ResponseDTO> updateDeviceToken(@RequestAttribute("user") UserDTO user, @RequestBody TokenDTO tokenDTO){
+	public ResponseEntity<ResponseDTO> updateDeviceToken(@RequestAttribute("user") String uid, @RequestBody TokenDTO tokenDTO){
 		try {
 
-			User searchedUser = userService.findById(user.getId());
+			User searchedUser = userService.findByUuid(uid, Status.ACTIVE);
 			List<Device> devices=searchedUser.getDevices()==null?new ArrayList<>():searchedUser.getDevices();
 
 			Status status=tokenDTO.getLogin()?Status.ACTIVE:Status.LOGOUT;
