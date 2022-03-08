@@ -237,9 +237,10 @@ public class UserController {
 
 
 	@CrossOrigin
-	@GetMapping("/users/all")
+	@GetMapping("/users/all/")
 	public ResponseEntity<ResponseDTO> getUsers(){
 		try {
+			System.out.println("all users");
 			List<User> users = userService.findAllUsers();
 			return ResponseEntity.ok().body(ResponseDTO.success(users));
 		} catch (Exception e) {
