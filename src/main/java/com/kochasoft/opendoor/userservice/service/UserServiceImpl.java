@@ -57,11 +57,11 @@ public class UserServiceImpl implements UserService {
 		Query qUser = db.collection("users").whereEqualTo("uuid", uuid).whereEqualTo("status", status);
 		List<QueryDocumentSnapshot> documents = qUser.get().get().getDocuments();
 
-		Query qUser1 = db.collection("users");
+		Query qUser1 = db.collection("users").whereEqualTo("uuid", uuid);
 
 		qUser1.get().get().getDocuments().forEach(a->{
 			User object = a.toObject(User.class);
-			System.out.println(object.getName());
+			System.out.println(object.getUuid());
 		});
 
 		if(!documents.isEmpty()){
