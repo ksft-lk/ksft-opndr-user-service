@@ -18,19 +18,19 @@ import com.kochasoft.opendoor.userservice.service.UserService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.server.ResponseStatusException;
 
-@Component
 public class SecurityFilter extends OncePerRequestFilter {
+    UserService userService=null;
+
+    public SecurityFilter (UserService userService){
+        this.userService=userService;
+    }
     
     Logger log=LoggerFactory.getLogger(SecurityFilter.class);
 
-    @Autowired
-    UserService userService;
 
 
     @Override
