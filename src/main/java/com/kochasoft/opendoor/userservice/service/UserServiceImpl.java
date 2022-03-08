@@ -3,6 +3,8 @@ package com.kochasoft.opendoor.userservice.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 import com.kochasoft.opendoor.userservice.domain.Status;
 import com.kochasoft.opendoor.userservice.domain.User;
 import com.kochasoft.opendoor.userservice.repository.UserRepository;
@@ -15,10 +17,9 @@ public class UserServiceImpl implements UserService {
 	UserRepository repository;
 
 	@Override
-	public void createUser(User user) {
+	public User createUser(User user) {
 		System.out.println("user creation service method $$$$$$$$$$$$$");
-		User block = repository.save(user).block();
-		System.out.println(block);
+		return repository.save(user).block();
 	}
 
 	@Override
@@ -27,8 +28,8 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void findAllUsers() {
-		// TODO Auto-generated method stub
+	public List<User> findAllUsers() {
+		return repository.findAll().collectList().block();
 
 	}
 
