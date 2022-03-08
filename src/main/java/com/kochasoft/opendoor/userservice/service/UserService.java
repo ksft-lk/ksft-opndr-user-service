@@ -9,7 +9,7 @@ public interface UserService {
 	public User createUser(User user);
 	public User findById(String id);
 	public User findUserByMobileNumber(String mobileNumber,String mobileCountryCode);
-	public User findByUuid(String uuid,Status status);
+	public User findByUuid(String uuid,Status status) throws Exception;
 	public List<User> findAllUsers();
 	public void deleteUserById(String id);
 }
