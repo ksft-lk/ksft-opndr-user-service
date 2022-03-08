@@ -71,6 +71,8 @@ public class SecurityFilter extends OncePerRequestFilter {
 
         User u = userService.findByUuid(uid, Status.ACTIVE);
 
+        log.info("logged user : {}",u);
+
         if(u==null){
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"User not found!");
         }
