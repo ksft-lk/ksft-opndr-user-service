@@ -1,9 +1,6 @@
 package com.kochasoft.opendoor.userservice;
 
 import com.kochasoft.opendoor.userservice.interceptor.SecurityFilter;
-import com.kochasoft.opendoor.userservice.service.UserService;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,16 +15,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter{
 
-    @Autowired
-    UserService service;
-
-
    @Override
    protected void configure(HttpSecurity http) throws Exception {
        http
        .cors().and()
        .csrf().disable()
-       .addFilterBefore(new SecurityFilter(service), UsernamePasswordAuthenticationFilter.class)
+       .addFilterBefore(new SecurityFilter(), UsernamePasswordAuthenticationFilter.class)
        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
        .authorizeRequests()
        .antMatchers("/**").permitAll()

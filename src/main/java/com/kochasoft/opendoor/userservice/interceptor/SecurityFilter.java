@@ -7,14 +7,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
-import com.kochasoft.opendoor.userservice.domain.Status;
-import com.kochasoft.opendoor.userservice.domain.User;
-import com.kochasoft.opendoor.userservice.dto.UserDTO;
-import com.kochasoft.opendoor.userservice.service.UserService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,15 +18,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.server.ResponseStatusException;
 
 public class SecurityFilter extends OncePerRequestFilter {
-    UserService userService=null;
-
-    public SecurityFilter (UserService userService){
-        this.userService=userService;
-    }
     
     Logger log=LoggerFactory.getLogger(SecurityFilter.class);
-
-
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -69,19 +57,9 @@ public class SecurityFilter extends OncePerRequestFilter {
 
         log.info("logged user uid : {}",uid);
 
-        User u = userService.findByUuid(uid, Status.ACTIVE);
-
-        log.info("logged user : {}",u);
-
-        if(u==null){
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"User not found!");
-        }
-       
-        ObjectMapper mapper=new ObjectMapper();
-        UserDTO user = mapper.convertValue(u, UserDTO.class);
         
-        log.info("interceptor user : {}", user.getId());
-        request.setAttribute("user", user);
+        
+        request.setAttribute("user", uid);
     }
     
 }
