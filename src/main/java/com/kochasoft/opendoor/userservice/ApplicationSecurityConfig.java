@@ -19,15 +19,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter{
 
     @Autowired
-    UserService service;
-
+    UserService userService; 
 
    @Override
    protected void configure(HttpSecurity http) throws Exception {
        http
        .cors().and()
        .csrf().disable()
-       .addFilterBefore(new SecurityFilter(service), UsernamePasswordAuthenticationFilter.class)
+       .addFilterBefore(new SecurityFilter(userService), UsernamePasswordAuthenticationFilter.class)
        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
        .authorizeRequests()
        .antMatchers("/**").permitAll()

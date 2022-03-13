@@ -1,37 +1,41 @@
 package com.kochasoft.opendoor.userservice.interceptor;
 
 import java.io.IOException;
+import java.util.LinkedHashMap;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
 import com.kochasoft.opendoor.userservice.domain.Status;
 import com.kochasoft.opendoor.userservice.domain.User;
+import com.kochasoft.opendoor.userservice.dto.ResponseDTO;
 import com.kochasoft.opendoor.userservice.dto.UserDTO;
 import com.kochasoft.opendoor.userservice.service.UserService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.server.ResponseStatusException;
 
 public class SecurityFilter extends OncePerRequestFilter {
+
     UserService userService=null;
 
-    public SecurityFilter (UserService userService){
+    public SecurityFilter(UserService userService){
         this.userService=userService;
     }
     
     Logger log=LoggerFactory.getLogger(SecurityFilter.class);
-
-
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -65,18 +69,21 @@ public class SecurityFilter extends OncePerRequestFilter {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"Invalid token!");
         }
 
-        String uid = decodedToken.getUid();
-        User u = userService.findByUuid(uid, Status.ACTIVE);
+        String uid = decodedToken.getUid().trim();
 
-        if(u==null){
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"User not found!");
-        }
-       
-        ObjectMapper mapper=new ObjectMapper();
-        UserDTO user = mapper.convertValue(u, UserDTO.class);
+        log.info("logged user uid : {}",uid);
         
-        log.info("interceptor user : {}", user.getId());
-        request.setAttribute("user", user);
+        User user = userService.findByUuid(uid, Status.ACTIVE);
+
+        if(user==null)
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"User not found!");
+
+        ObjectMapper mapper=new ObjectMapper();
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        UserDTO userDto = mapper.convertValue(user, UserDTO.class);
+        log.info("user dto {}",userDto);
+        
+        request.setAttribute("user", userDto);
     }
     
 }

@@ -5,6 +5,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.Query;
+import com.google.cloud.firestore.QueryDocumentSnapshot;
+import com.google.firebase.cloud.FirestoreClient;
 import com.kochasoft.opendoor.userservice.domain.Status;
 import com.kochasoft.opendoor.userservice.domain.User;
 import com.kochasoft.opendoor.userservice.repository.UserRepository;
@@ -46,9 +50,9 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User findByUuid(String uuid, Status status) {
-		
-		return repository.findByUuidAndStatus(uuid,status).block();
+	public User findByUuid(String uuid, Status status){
+
+		return repository.findByUuidAndStatus(uuid, status).block();
 	}
 
 }
