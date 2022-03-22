@@ -47,11 +47,11 @@ public class DeviceController {
 
   @GetMapping("/devices")
   public ResponseEntity<ResponseDTO> findByUserIdAndStatus(
-      @RequestAttribute("user") UserDTO user,
+      @RequestParam(value = "userId", required = true) String userId,
       @RequestParam(required = false, defaultValue = "ACTIVE") Status status) {
     try {
       final List<DeviceDTO> devices =
-          deviceService.findByUserIdAndStatus(user.getId(), status).stream()
+          deviceService.findByUserIdAndStatus(userId, status).stream()
               .map(Device::createDTO)
               .collect(Collectors.toList());
 
