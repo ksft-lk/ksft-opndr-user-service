@@ -1,6 +1,7 @@
 package com.kochasoft.opendoor.userservice.domain;
 
 import com.google.cloud.firestore.annotation.DocumentId;
+import com.kochasoft.opendoor.userservice.dto.DeviceDTO;
 import lombok.ToString;
 import org.springframework.cloud.gcp.data.firestore.Document;
 
@@ -53,5 +54,15 @@ public class Device {
 
   public void setDeviceId(String deviceId) {
     this.deviceId = deviceId;
+  }
+
+  public DeviceDTO createDTO() {
+    final DeviceDTO dto = new DeviceDTO();
+    dto.setId(id);
+    dto.setUserId(userId);
+    dto.setToken(token);
+    dto.setStatus(status);
+
+    return dto;
   }
 }

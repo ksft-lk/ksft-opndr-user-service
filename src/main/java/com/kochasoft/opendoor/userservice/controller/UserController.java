@@ -1,45 +1,30 @@
 package com.kochasoft.opendoor.userservice.controller;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.kochasoft.opendoor.userservice.domain.Status;
+import com.kochasoft.opendoor.userservice.domain.User;
+import com.kochasoft.opendoor.userservice.dto.CardDTO;
+import com.kochasoft.opendoor.userservice.dto.Local;
+import com.kochasoft.opendoor.userservice.dto.ResponseDTO;
+import com.kochasoft.opendoor.userservice.dto.ResponseDTO.ResponseStatusCode;
+import com.kochasoft.opendoor.userservice.dto.UserDTO;
+import com.kochasoft.opendoor.userservice.service.DeviceService;
+import com.kochasoft.opendoor.userservice.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
+
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import com.google.firebase.auth.FirebaseAuth;
-import com.kochasoft.opendoor.userservice.domain.Status;
-import com.kochasoft.opendoor.userservice.domain.User;
-import com.kochasoft.opendoor.userservice.domain.Device;
-import com.kochasoft.opendoor.userservice.dto.CardDTO;
-import com.kochasoft.opendoor.userservice.dto.Local;
-import com.kochasoft.opendoor.userservice.dto.ResponseDTO;
-import com.kochasoft.opendoor.userservice.dto.TokenDTO;
-import com.kochasoft.opendoor.userservice.dto.ResponseDTO.ResponseStatusCode;
-import com.kochasoft.opendoor.userservice.dto.UserDTO;
-import com.kochasoft.opendoor.userservice.service.DeviceService;
-import com.kochasoft.opendoor.userservice.service.UserService;
-import com.kochasoft.opendoor.userservice.util.SingleCollector;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
-
-
 
 @RestController
 @RequestMapping("/v1")
@@ -196,57 +181,6 @@ public class UserController {
 			return e.getMessage();
 		}
 	}
-
-	@PutMapping("/users/tokens")
-	public ResponseEntity<ResponseDTO> updateDeviceToken(@RequestAttribute("user") UserDTO user, @RequestBody TokenDTO tokenDTO){
-		try {
-			Device dev = new Device();
-			dev.setId(tokenDTO.getDeviceId());
-			dev.setUserId(user.getId());
-			dev.setStatus(tokenDTO.getLogin() ?Status.ACTIVE : Status.LOGOUT);
-			dev.setToken(tokenDTO.getToken());
-			dev.setDeviceId(tokenDTO.getDeviceId());
-
-			deviceService.createDevice(dev);
-
-			User searchedUser = userService.findById(user.getId());
-			List<Device> devices=searchedUser.getDevices()==null?new ArrayList<>():searchedUser.getDevices();
-
-			Status status=tokenDTO.getLogin()?Status.ACTIVE:Status.LOGOUT;
-			String token=tokenDTO.getToken();
-			String deviceId = tokenDTO.getDeviceId();
-
-			Device device=null;
-			if(!devices.isEmpty()){
-				device = devices.stream()
-				.filter(a-> a.getId().equals(tokenDTO.getDeviceId()))
-				.collect(SingleCollector.collector());
-			}
-
-			if(device==null){
-				device = new Device();
-				device.setToken(token);
-				device.setStatus(status);
-				device.setId(deviceId);
-				devices.add(device);
-			}else{
-				device.setToken(token);
-				device.setStatus(status);
-			}
-
-			device.setDeviceId(deviceId);
-
-			searchedUser.setDevices(devices);
-			userService.createUser(searchedUser);
-			
-			return ResponseEntity.ok().body(ResponseDTO.success());
-		} catch (Exception e) {
-			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-			.body(ResponseDTO.failed(ResponseStatusCode.FAIL, null, ERR_EXCP));
-		}
-	}
-
 
 	@CrossOrigin
 	@GetMapping("/users")
