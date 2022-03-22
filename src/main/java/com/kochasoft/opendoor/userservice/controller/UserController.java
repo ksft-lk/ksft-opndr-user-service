@@ -205,6 +205,7 @@ public class UserController {
 			dev.setUserId(user.getId());
 			dev.setStatus(tokenDTO.getLogin() ?Status.ACTIVE : Status.LOGOUT);
 			dev.setToken(tokenDTO.getToken());
+			dev.setDeviceId(tokenDTO.getDeviceId());
 
 			deviceService.createDevice(dev);
 
@@ -232,6 +233,8 @@ public class UserController {
 				device.setToken(token);
 				device.setStatus(status);
 			}
+
+			device.setDeviceId(deviceId);
 
 			searchedUser.setDevices(devices);
 			userService.createUser(searchedUser);

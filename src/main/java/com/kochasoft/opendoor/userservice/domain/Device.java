@@ -13,6 +13,7 @@ public class Device {
   private String userId;
   private String token;
   private Status status;
+  private String deviceId;
 
   public String getUserId() {
     return userId;
@@ -44,5 +45,13 @@ public class Device {
 
   public void setStatus(Status status) {
     this.status = status;
+  }
+
+  public String getDeviceId() {
+    return deviceId;
+  }
+
+  public void setDeviceId(String deviceId) {
+    this.deviceId = deviceId;
   }
 }
