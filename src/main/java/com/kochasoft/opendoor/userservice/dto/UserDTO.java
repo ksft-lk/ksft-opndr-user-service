@@ -2,7 +2,7 @@ package com.kochasoft.opendoor.userservice.dto;
 
 import java.util.List;
 
-import com.kochasoft.opendoor.userservice.domain.User.Device;
+import com.kochasoft.opendoor.userservice.domain.Device;
 
 public class UserDTO {
 	private String id;

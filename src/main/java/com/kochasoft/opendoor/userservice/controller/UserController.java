@@ -9,19 +9,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.kochasoft.opendoor.userservice.domain.Status;
 import com.kochasoft.opendoor.userservice.domain.User;
-import com.kochasoft.opendoor.userservice.domain.User.Device;
+import com.kochasoft.opendoor.userservice.domain.Device;
 import com.kochasoft.opendoor.userservice.dto.CardDTO;
 import com.kochasoft.opendoor.userservice.dto.Local;
 import com.kochasoft.opendoor.userservice.dto.ResponseDTO;
 import com.kochasoft.opendoor.userservice.dto.TokenDTO;
 import com.kochasoft.opendoor.userservice.dto.ResponseDTO.ResponseStatusCode;
 import com.kochasoft.opendoor.userservice.dto.UserDTO;
+import com.kochasoft.opendoor.userservice.service.DeviceService;
 import com.kochasoft.opendoor.userservice.service.UserService;
 import com.kochasoft.opendoor.userservice.util.SingleCollector;
 
@@ -51,6 +50,9 @@ public class UserController {
 
 	@Autowired
 	UserService userService;
+
+	@Autowired
+	DeviceService deviceService;
 
 	@Value("${firebase-api-key}")
 	String firebaseWebAPIKey;
@@ -198,6 +200,14 @@ public class UserController {
 	@PutMapping("/users/tokens")
 	public ResponseEntity<ResponseDTO> updateDeviceToken(@RequestAttribute("user") UserDTO user, @RequestBody TokenDTO tokenDTO){
 		try {
+			Device dev = new Device();
+			dev.setId(tokenDTO.getDeviceId());
+			dev.setUserId(user.getId());
+			dev.setStatus(tokenDTO.getLogin() ?Status.ACTIVE : Status.LOGOUT);
+			dev.setToken(tokenDTO.getToken());
+			dev.setDeviceId(tokenDTO.getDeviceId());
+
+			deviceService.createDevice(dev);
 
 			User searchedUser = userService.findById(user.getId());
 			List<Device> devices=searchedUser.getDevices()==null?new ArrayList<>():searchedUser.getDevices();
@@ -209,7 +219,7 @@ public class UserController {
 			Device device=null;
 			if(!devices.isEmpty()){
 				device = devices.stream()
-				.filter(a-> a.getDeviceId().equals(tokenDTO.getDeviceId()))
+				.filter(a-> a.getId().equals(tokenDTO.getDeviceId()))
 				.collect(SingleCollector.collector());
 			}
 
@@ -217,12 +227,14 @@ public class UserController {
 				device = new Device();
 				device.setToken(token);
 				device.setStatus(status);
-				device.setDeviceId(deviceId);
+				device.setId(deviceId);
 				devices.add(device);
 			}else{
 				device.setToken(token);
 				device.setStatus(status);
 			}
+
+			device.setDeviceId(deviceId);
 
 			searchedUser.setDevices(devices);
 			userService.createUser(searchedUser);
