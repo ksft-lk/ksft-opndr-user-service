@@ -5,6 +5,7 @@ import com.kochasoft.opendoor.userservice.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -42,8 +43,8 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter{
             "/v1/users/uid/**",
             "/v1/users/id/**",
             "/v1/users/mobile/**",
-            "/v1/users",
             "/health",
             "/liveness_check");
+        web.ignoring().antMatchers(HttpMethod.GET,"/v1/users");
     }
 }
