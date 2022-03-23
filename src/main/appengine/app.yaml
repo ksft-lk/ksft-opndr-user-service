@@ -5,3 +5,9 @@ health_check:
   enable_health_check: False
 env_variables:
   SERVICE_NAME: "ksft-opendr-user-service"
+automatic_scaling:
+  min_instances: 1
+  max_instances: 15
+  min_pending_latency: 3s
+  max_concurrent_requests: 50
+  min_idle_instances: 1
