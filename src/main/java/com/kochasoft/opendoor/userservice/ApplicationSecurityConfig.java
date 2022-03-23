@@ -42,6 +42,8 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter{
             "/v1/users/uid/**",
             "/v1/users/id/**",
             "/v1/users/mobile/**",
-            "/v1/users");
+            "/v1/users",
+            "/health",
+            "/liveness_check");
     }
 }
