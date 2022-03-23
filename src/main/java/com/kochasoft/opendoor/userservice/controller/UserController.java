@@ -1,5 +1,9 @@
 package com.kochasoft.opendoor.userservice.controller;
 
+import com.google.cloud.storage.BlobId;
+import com.google.cloud.storage.BlobInfo;
+import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.kochasoft.opendoor.userservice.domain.Status;
 import com.kochasoft.opendoor.userservice.domain.User;
@@ -10,6 +14,11 @@ import com.kochasoft.opendoor.userservice.dto.ResponseDTO.ResponseStatusCode;
 import com.kochasoft.opendoor.userservice.dto.UserDTO;
 import com.kochasoft.opendoor.userservice.service.DeviceService;
 import com.kochasoft.opendoor.userservice.service.UserService;
+import com.kochasoft.opendoor.userservice.util.MediaTypeMap;
+import com.kochasoft.opendoor.userservice.util.Util;
+
+import org.apache.commons.codec.binary.Base64;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -17,6 +26,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.net.URLConnection;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.HashMap;
@@ -25,6 +37,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping("/v1")
@@ -41,6 +55,20 @@ public class UserController {
 
 	@Value("${firebase-api-key}")
 	String firebaseWebAPIKey;
+
+	@Value("${ksft.opendr.bucket}")
+    String bucketName;
+
+	@Value("${ksft.opendr.user.avatar.location}")
+	String userAvatarLocation;
+
+    @Value("${spring.cloud.gcp.project-id}")
+    String projectId;
+
+	@Value("${ksft.opendr.user.avatar.url}")
+    String userAvatarUrl;
+
+
 
 	@PostMapping("/users")
 	@CrossOrigin
@@ -86,6 +114,79 @@ public class UserController {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseDTO.failed());
+		}
+	}
+
+	@PutMapping("/users")
+	public ResponseEntity<ResponseDTO> updateUser(@RequestAttribute("user") UserDTO user, @RequestBody UserDTO userDto){
+		try {
+			String userId = user.getId();
+			User existingUser = userService.findById(userId);
+
+			boolean hasAnyUpdate=false;
+
+			if(userDto.getName()!=null){
+				existingUser.setName(userDto.getName());
+				hasAnyUpdate=true;
+			}
+			
+
+			if(userDto.getAvatar()!=null){
+				String delims="[,]";
+				String[] parts = userDto.getAvatar().split(delims);
+				String imageString = parts[1];
+				byte[] imageByteArray = Base64.decodeBase64(imageString);
+				ByteArrayInputStream is = new ByteArrayInputStream(imageByteArray);
+
+				
+				String mimeType = URLConnection.guessContentTypeFromStream(is);
+				String delimiter="[/]";
+				String[] tokens = mimeType.split(delimiter);
+				String fileExtension = tokens[1];
+
+
+				String fileName = userId + "_" + Util.getCurrentTime() + "." + fileExtension;
+				String uri = userAvatarLocation + "/" +  fileName;
+				Storage storage = StorageOptions.newBuilder().setProjectId(projectId).build().getService();
+				BlobId blobId = BlobId.of(bucketName, uri);
+				BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
+
+				
+				storage.createFrom(blobInfo, is);
+				
+				existingUser.setAvatar(userAvatarUrl+fileName);
+				hasAnyUpdate=true;
+			}
+
+			if(hasAnyUpdate)
+				userService.createUser(existingUser);
+			
+
+			return ResponseEntity.ok(ResponseDTO.success(existingUser));
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseDTO.failed());
+		}
+	}
+
+	@GetMapping("/users/avatar/{fileName}")
+	@CrossOrigin(origins = "*", originPatterns = "*" )
+	public void getAttachment(@PathVariable String fileName,HttpServletResponse response) {
+		try {
+            Storage storage = StorageOptions.newBuilder().setProjectId(projectId).build().getService();
+			String uri=userAvatarLocation+"/"+fileName;
+			byte[] fileBytes = storage.readAllBytes(bucketName, uri);
+			InputStream targetStream = new ByteArrayInputStream(fileBytes);
+
+			String[] split = fileName.split("\\.");
+			String extention = split[split.length-1];
+
+			response.setContentType(MediaTypeMap.valueOf(extention.toUpperCase()).getMediaType());
+
+			IOUtils.copy(targetStream, response.getOutputStream());
+
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
