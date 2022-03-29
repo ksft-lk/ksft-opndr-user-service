@@ -6,7 +6,7 @@ health_check:
 env_variables:
   SERVICE_NAME: "ksft-opendr-user-service"
 automatic_scaling:
-  min_instances: 1
+  min_instances: 2
   max_instances: 15
   min_pending_latency: 3s
   max_concurrent_requests: 50
