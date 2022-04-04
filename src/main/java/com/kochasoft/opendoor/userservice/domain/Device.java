@@ -15,9 +15,27 @@ public class Device {
   private String token;
   private Status status;
   private String deviceId;
+  private String updatedAt;
+  private String createdAt;
 
   public String getUserId() {
     return userId;
+  }
+
+  public String getUpdatedAt() {
+    return updatedAt;
+  }
+
+  public void setUpdatedAt(String updatedAt) {
+    this.updatedAt = updatedAt;
+  }
+
+  public String getCreatedAt() {
+    return createdAt;
+  }
+
+  public void setCreatedAt(String createdAt) {
+    this.createdAt = createdAt;
   }
 
   public void setUserId(String userId) {

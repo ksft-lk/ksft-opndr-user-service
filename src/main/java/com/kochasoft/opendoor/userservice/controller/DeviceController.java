@@ -7,6 +7,8 @@ import com.kochasoft.opendoor.userservice.dto.ResponseDTO;
 import com.kochasoft.opendoor.userservice.dto.TokenDTO;
 import com.kochasoft.opendoor.userservice.dto.UserDTO;
 import com.kochasoft.opendoor.userservice.service.DeviceService;
+import com.kochasoft.opendoor.userservice.util.Util;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +36,12 @@ public class DeviceController {
       device.setStatus(tokenDTO.getLogin() ? Status.ACTIVE : Status.LOGOUT);
       device.setToken(tokenDTO.getToken());
       device.setDeviceId(tokenDTO.getDeviceId());
+      if(tokenDTO.getDeviceId()==null){
+        device.setCreatedAt(Util.getCurrentTime());
+        device.setUpdatedAt(Util.getCurrentTime());
+      }else{
+        device.setUpdatedAt(Util.getCurrentTime());
+      }
 
       deviceService.createDevice(device);
 
