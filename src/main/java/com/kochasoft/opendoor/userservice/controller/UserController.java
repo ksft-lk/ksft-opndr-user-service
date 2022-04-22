@@ -39,7 +39,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.websocket.server.PathParam;
 
 @RestController
 @RequestMapping("/v1")
@@ -119,7 +118,7 @@ public class UserController {
 	}
 
 	@PutMapping("/users/{id}")
-	public ResponseEntity<ResponseDTO> updateUserById(@PathParam("id") String id, @RequestBody UserDTO userDto){
+	public ResponseEntity<ResponseDTO> updateUserById(@PathVariable("id") String id, @RequestBody UserDTO userDto){
 		try {
 
 			if(id==null || id.isEmpty()){
