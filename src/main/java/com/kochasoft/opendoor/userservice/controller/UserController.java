@@ -39,6 +39,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.websocket.server.PathParam;
 
 @RestController
 @RequestMapping("/v1")
@@ -111,6 +112,42 @@ public class UserController {
 			cardDTO.setUserId(createUser.getId());
 			
 			return ResponseEntity.ok(ResponseDTO.success());
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseDTO.failed());
+		}
+	}
+
+	@PutMapping("/users/{id}")
+	public ResponseEntity<ResponseDTO> updateUserById(@PathParam("id") String id, @RequestBody UserDTO userDto){
+		try {
+
+			if(id==null || id.isEmpty()){
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseDTO.failed(
+					ResponseStatusCode.CRITICAL,"validation failed","ID cannot be null or empty"));
+			}
+
+			String userId = id;
+			User existingUser = userService.findById(userId);
+
+			boolean hasAnyUpdate=false;
+
+			if(userDto.getName()!=null){
+				existingUser.setName(userDto.getName());
+				hasAnyUpdate=true;
+			}
+
+			
+			if(userDto.getCanCreateCards()!=null){
+				existingUser.setCanCreateCards(userDto.getCanCreateCards());
+				hasAnyUpdate=true;
+			}
+
+			if(hasAnyUpdate)
+				userService.createUser(existingUser);
+			
+
+			return ResponseEntity.ok(ResponseDTO.success(existingUser));
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseDTO.failed());
