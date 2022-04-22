@@ -158,6 +158,11 @@ public class UserController {
 				hasAnyUpdate=true;
 			}
 
+			if(userDto.getCanCreateCards()!=null){
+				existingUser.setCanCreateCards(userDto.getCanCreateCards());
+				hasAnyUpdate=true;
+			}
+
 			if(hasAnyUpdate)
 				userService.createUser(existingUser);
 			
@@ -232,6 +237,7 @@ public class UserController {
 			userDTO.setMobileNumber(user.getMobileNumber());
 			userDTO.setUuid(user.getUuid());
 			userDTO.setDevices(user.getDevices());
+			userDTO.setCanCreateCards(user.isCanCreateCards());
 			
 		   	return ResponseEntity.ok(ResponseDTO.success(userDTO));
 	   } catch (Exception e) {

@@ -16,10 +16,17 @@ public class UserDTO {
 	private String avatar;
 	private String redeemCode;
 	private List<Device> devices;
+	private Boolean canCreateCards;
 
 	
 	public String getId() {
 		return id;
+	}
+	public Boolean getCanCreateCards() {
+		return canCreateCards;
+	}
+	public void setCanCreateCards(Boolean canCreateCards) {
+		this.canCreateCards = canCreateCards;
 	}
 	public List<Device> getDevices() {
 		return devices;
