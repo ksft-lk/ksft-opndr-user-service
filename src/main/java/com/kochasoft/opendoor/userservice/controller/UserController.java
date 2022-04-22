@@ -117,6 +117,42 @@ public class UserController {
 		}
 	}
 
+	@PutMapping("/users/{id}")
+	public ResponseEntity<ResponseDTO> updateUserById(@PathVariable("id") String id, @RequestBody UserDTO userDto){
+		try {
+
+			if(id==null || id.isEmpty()){
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseDTO.failed(
+					ResponseStatusCode.CRITICAL,"validation failed","ID cannot be null or empty"));
+			}
+
+			String userId = id;
+			User existingUser = userService.findById(userId);
+
+			boolean hasAnyUpdate=false;
+
+			if(userDto.getName()!=null){
+				existingUser.setName(userDto.getName());
+				hasAnyUpdate=true;
+			}
+
+			
+			if(userDto.getCanCreateCards()!=null){
+				existingUser.setCanCreateCards(userDto.getCanCreateCards());
+				hasAnyUpdate=true;
+			}
+
+			if(hasAnyUpdate)
+				userService.createUser(existingUser);
+			
+
+			return ResponseEntity.ok(ResponseDTO.success(existingUser));
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseDTO.failed());
+		}
+	}
+
 	@PutMapping("/users")
 	public ResponseEntity<ResponseDTO> updateUser(@RequestAttribute("user") UserDTO user, @RequestBody UserDTO userDto){
 		try {
@@ -155,6 +191,11 @@ public class UserController {
 				storage.createFrom(blobInfo, is);
 				
 				existingUser.setAvatar(userAvatarUrl+fileName);
+				hasAnyUpdate=true;
+			}
+
+			if(userDto.getCanCreateCards()!=null){
+				existingUser.setCanCreateCards(userDto.getCanCreateCards());
 				hasAnyUpdate=true;
 			}
 
@@ -232,6 +273,7 @@ public class UserController {
 			userDTO.setMobileNumber(user.getMobileNumber());
 			userDTO.setUuid(user.getUuid());
 			userDTO.setDevices(user.getDevices());
+			userDTO.setCanCreateCards(user.isCanCreateCards());
 			
 		   	return ResponseEntity.ok(ResponseDTO.success(userDTO));
 	   } catch (Exception e) {

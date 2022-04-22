@@ -30,6 +30,7 @@ public class User {
 	private String avatar;
 	private Status status;
 	private List<Device> devices;
+	private boolean canCreateCards;
 
 	public static class Action {
 		private String action ; 
@@ -71,6 +72,14 @@ public class User {
 
 	public String getId() {
 		return id;
+	}
+
+	public boolean isCanCreateCards() {
+		return canCreateCards;
+	}
+
+	public void setCanCreateCards(boolean canCreateCards) {
+		this.canCreateCards = canCreateCards;
 	}
 
 	public List<Device> getDevices() {
