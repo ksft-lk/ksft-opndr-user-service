@@ -76,6 +76,16 @@ public class UserController {
 		try {
 			
 			//Validation
+			if(userDTO.getMobileNumber()==null){
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+						.body(ResponseDTO.failed(ResponseStatusCode.FAIL,"Mobile Number","Enter Mobile Number"));
+			}else if(userDTO.getName()==null){
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+						.body(ResponseDTO.failed(ResponseStatusCode.FAIL,"Name","Enter Name"));
+			}else if(userDTO.getMobileCountryCode()==null){
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+						.body(ResponseDTO.failed(ResponseStatusCode.FAIL,"Mobile","Enter Mobile country code"));
+			}
 			
 			String mobileNumber = userDTO.getMobileNumber();
 			Pattern pattern = Pattern.compile("^\\d{5,15}$");
@@ -101,7 +111,7 @@ public class UserController {
 			user.setCreatedAt(epochMilli);
 			user.setCreatedBy("APP");
 			
-			User createUser = userService.createUser(user);
+			User createUser = userService.createUser(user,true);
 
 			//create basic card
 			CardDTO cardDTO=new CardDTO();
@@ -111,6 +121,42 @@ public class UserController {
 			cardDTO.setUserId(createUser.getId());
 			
 			return ResponseEntity.ok(ResponseDTO.success());
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseDTO.failed());
+		}
+	}
+
+	@PutMapping("/users/{id}")
+	public ResponseEntity<ResponseDTO> updateUserById(@PathVariable("id") String id, @RequestBody UserDTO userDto){
+		try {
+
+			if(id==null || id.isEmpty()){
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseDTO.failed(
+					ResponseStatusCode.CRITICAL,"validation failed","ID cannot be null or empty"));
+			}
+
+			String userId = id;
+			User existingUser = userService.findById(userId);
+
+			boolean hasAnyUpdate=false;
+
+			if(userDto.getName()!=null){
+				existingUser.setName(userDto.getName());
+				hasAnyUpdate=true;
+			}
+
+			
+			if(userDto.getCanCreateCards()!=null){
+				existingUser.setCanCreateCards(userDto.getCanCreateCards());
+				hasAnyUpdate=true;
+			}
+
+			if(hasAnyUpdate)
+				userService.createUser(existingUser,false);
+			
+
+			return ResponseEntity.ok(ResponseDTO.success(existingUser));
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseDTO.failed());
@@ -158,8 +204,13 @@ public class UserController {
 				hasAnyUpdate=true;
 			}
 
+			if(userDto.getCanCreateCards()!=null){
+				existingUser.setCanCreateCards(userDto.getCanCreateCards());
+				hasAnyUpdate=true;
+			}
+
 			if(hasAnyUpdate)
-				userService.createUser(existingUser);
+				userService.createUser(existingUser,false);
 			
 
 			return ResponseEntity.ok(ResponseDTO.success(existingUser));
@@ -232,6 +283,7 @@ public class UserController {
 			userDTO.setMobileNumber(user.getMobileNumber());
 			userDTO.setUuid(user.getUuid());
 			userDTO.setDevices(user.getDevices());
+			userDTO.setCanCreateCards(user.isCanCreateCards());
 			
 		   	return ResponseEntity.ok(ResponseDTO.success(userDTO));
 	   } catch (Exception e) {
@@ -240,19 +292,10 @@ public class UserController {
 	   }
     }
 
-	@GetMapping("/users/uid/{uid}")
-    public ResponseEntity<ResponseDTO> getUser(@PathVariable(name = "uid",required = true) String uid){
+	@GetMapping("/users/uid")
+    public ResponseEntity<ResponseDTO> getUser(@RequestAttribute("user") UserDTO user){
 		try {
-			
-			User user = userService.findByUuid(uid,Status.ACTIVE);
-			if(user==null){
-				return ResponseEntity.ok(ResponseDTO.failed(ResponseStatusCode.FAIL, "No active User","user not found"));
-			}
-			UserDTO userDTO = new UserDTO();
-			userDTO.setId(user.getId());
-			userDTO.setName(user.getName());
-			
-		   	return ResponseEntity.ok(ResponseDTO.success(userDTO));
+		   	return ResponseEntity.ok(ResponseDTO.success(user));
 	   } catch (Exception e) {
 		e.printStackTrace();
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseDTO.failed());
@@ -261,23 +304,9 @@ public class UserController {
 
 	@GetMapping("/users/{uid}/token")
 	public String getNewToken(@PathVariable String uid) {
-		Map<String, Object> params = new HashMap<>();
-		String customtoken;
 		try {
-			customtoken = FirebaseAuth.getInstance().createCustomToken(uid);
-
-			params.put("token", customtoken);
-			params.put("returnSecureToken", true);
-
-			LinkedHashMap<String, Object> postForObject = new RestTemplate().postForObject(
-					"https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyCustomToken?key="
-							+ firebaseWebAPIKey,
-					params, LinkedHashMap.class);
-
-			return postForObject.get("idToken").toString();
-
+			return userService.generateNewToken(uid);
 		} catch (Exception e) {
-			
 			e.printStackTrace();
 			return e.getMessage();
 		}

@@ -40,7 +40,6 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter{
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers( 
             "/v1/users/**/token",
-            "/v1/users/uid/**",
             "/v1/users/id/**",
             "/v1/users/mobile/**",
             "/health",

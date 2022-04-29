@@ -3,8 +3,6 @@ package com.kochasoft.opendoor.userservice.dto;
 import java.util.List;
 
 import com.kochasoft.opendoor.userservice.domain.Status;
-
-
 public class CardDTO {
 	
 	private String id;
