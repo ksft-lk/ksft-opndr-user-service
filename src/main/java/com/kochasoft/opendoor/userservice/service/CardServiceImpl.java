@@ -1,5 +1,8 @@
 package com.kochasoft.opendoor.userservice.service;
 
+import java.util.Map;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kochasoft.opendoor.userservice.dto.CardDTO;
 import com.kochasoft.opendoor.userservice.dto.ResponseDTO;
 
@@ -19,13 +22,16 @@ public class CardServiceImpl implements CardService {
     String interactionServiceUrl;
     
     @Override
-    public CardDTO createCard(CardDTO cardDto,String token) {
+    public CardDTO createCard(CardDTO cardDto,String token)  throws Exception{
 
         final HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", token);
         headers.setContentType(MediaType.APPLICATION_JSON);
+
+        ObjectMapper mapper=new ObjectMapper();
+        String convertValue = mapper.writeValueAsString(cardDto);
   
-        final HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
+        final HttpEntity<String> entity = new HttpEntity<>(convertValue, headers);
   
   
         // ResponseEntity<ResponseDTO> responseDto =
