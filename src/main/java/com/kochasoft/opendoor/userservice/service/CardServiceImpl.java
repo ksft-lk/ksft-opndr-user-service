@@ -31,7 +31,7 @@ public class CardServiceImpl implements CardService {
   
         final HttpEntity<CardDTO> entity = new HttpEntity<>(cardDto, headers);
 
-        ResponseEntity<ResponseDTO> responseDto = new RestTemplate().postForEntity(interactionServiceUrl+"/v1/cards", entity, ResponseDTO.class, cardDto);
+        new RestTemplate().postForEntity(interactionServiceUrl+"/v1/cards", entity, ResponseDTO.class, cardDto);
     }
     
 }
