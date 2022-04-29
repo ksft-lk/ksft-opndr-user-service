@@ -4,7 +4,14 @@ import java.util.List;
 
 import com.kochasoft.opendoor.userservice.domain.Status;
 
+import lombok.Builder;
+import lombok.Getter;
+import lombok.ToString;
 
+
+@Builder
+@Getter
+@ToString
 public class CardDTO {
 	
 	private String id;

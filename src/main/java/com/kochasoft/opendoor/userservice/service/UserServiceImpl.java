@@ -2,6 +2,7 @@ package com.kochasoft.opendoor.userservice.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -11,6 +12,7 @@ import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.firebase.cloud.FirestoreClient;
 import com.kochasoft.opendoor.userservice.domain.Status;
 import com.kochasoft.opendoor.userservice.domain.User;
+import com.kochasoft.opendoor.userservice.dto.CardDTO;
 import com.kochasoft.opendoor.userservice.repository.UserRepository;
 
 
@@ -20,10 +22,20 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	UserRepository repository;
 
+	@Autowired
+	CardService cardService;
+
 	@Override
+	@Transactional
 	public User createUser(User user) {
-		System.out.println("user creation service method $$$$$$$$$$$$$");
-		return repository.save(user).block();
+		User savedUser=repository.save(user).block();
+
+		CardDTO cardDto=CardDTO.builder()
+		.id("sdf");
+
+		cardService.createCard(cardDto);
+
+		return savedUser;
 	}
 
 	@Override
