@@ -28,10 +28,8 @@ public class CardServiceImpl implements CardService {
         headers.add("Authorization", token);
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        ObjectMapper mapper=new ObjectMapper();
-        String convertValue = mapper.writeValueAsString(cardDto);
   
-        final HttpEntity<String> entity = new HttpEntity<>(convertValue, headers);
+        final HttpEntity<CardDTO> entity = new HttpEntity<>(cardDto, headers);
   
   
         // ResponseEntity<ResponseDTO> responseDto =
