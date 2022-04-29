@@ -36,6 +36,10 @@ public class UserServiceImpl implements UserService {
 	@Value("${firebase-api-key}")
 	String firebaseWebAPIKey;
 
+	
+	@Value("${ksft.opendr.card.avatar.url}")
+	String cardAvatarPath;
+
 	@Override
 	@Transactional
 	public User createUser(User user,boolean createCard) throws Exception{
@@ -65,7 +69,7 @@ public class UserServiceImpl implements UserService {
 		cardDto.setUserId(savedUser.getId());
 		cardDto.setSubTitle(subTitle);
 		cardDto.setExpiration(0);
-		cardDto.setAvatar(savedUser.getAvatar());
+		cardDto.setAvatar(cardAvatarPath+"default-card-avatar.png");
 		cardService.createCard(cardDto,token);
 
 		return savedUser;
