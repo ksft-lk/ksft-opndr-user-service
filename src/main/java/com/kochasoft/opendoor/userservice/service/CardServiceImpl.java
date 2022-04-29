@@ -6,7 +6,6 @@ import com.kochasoft.opendoor.userservice.dto.ResponseDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -27,8 +26,10 @@ public class CardServiceImpl implements CardService {
         final HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
   
   
-        ResponseEntity<ResponseDTO> responseDto =
-        new RestTemplate().exchange(interactionServiceUrl+"/v1/cards", HttpMethod.POST, entity, ResponseDTO.class, cardDto);
+        // ResponseEntity<ResponseDTO> responseDto =
+        // new RestTemplate().exchange(interactionServiceUrl+"/v1/cards", HttpMethod.POST, entity, ResponseDTO.class, cardDto);
+
+        ResponseEntity<ResponseDTO> responseDto = new RestTemplate().postForEntity(interactionServiceUrl+"/v1/cards", entity, ResponseDTO.class);
 
        return (CardDTO)responseDto.getBody().getResult();
     }
