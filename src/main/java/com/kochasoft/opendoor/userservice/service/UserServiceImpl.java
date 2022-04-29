@@ -13,6 +13,7 @@ import com.google.firebase.cloud.FirestoreClient;
 import com.kochasoft.opendoor.userservice.domain.Status;
 import com.kochasoft.opendoor.userservice.domain.User;
 import com.kochasoft.opendoor.userservice.dto.CardDTO;
+import com.kochasoft.opendoor.userservice.dto.Local;
 import com.kochasoft.opendoor.userservice.repository.UserRepository;
 
 
@@ -30,9 +31,24 @@ public class UserServiceImpl implements UserService {
 	public User createUser(User user) {
 		User savedUser=repository.save(user).block();
 
-		CardDTO cardDto=CardDTO.builder()
-		.id("sdf");
+		if(savedUser==null){
+			return null;
+		}
 
+		CardDTO cardDto=new CardDTO();
+
+		Local userDisplayNameLocal= new Local();
+		userDisplayNameLocal.setEn(user.getName());
+
+		Local subTitle= new Local();
+		subTitle.setEn("Personal");
+		
+		cardDto.setUserDisplayName(userDisplayNameLocal);
+		cardDto.setRestrictionType("No restriction");
+		cardDto.setUserId(savedUser.getId());
+		cardDto.setSubTitle(subTitle);
+		cardDto.setExpiration(0);
+		cardDto.setAvatar(savedUser.getAvatar());
 		cardService.createCard(cardDto);
 
 		return savedUser;
