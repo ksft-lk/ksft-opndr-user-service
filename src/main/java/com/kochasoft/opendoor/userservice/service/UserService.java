@@ -6,10 +6,11 @@ import com.kochasoft.opendoor.userservice.domain.Status;
 import com.kochasoft.opendoor.userservice.domain.User;
 
 public interface UserService {
-	public User createUser(User user,boolean createCard,String token);
+	public User createUser(User user,boolean createCard)throws Exception;
 	public User findById(String id);
 	public User findUserByMobileNumber(String mobileNumber,String mobileCountryCode);
 	public User findByUuid(String uuid,Status status);
 	public List<User> findAllUsers();
 	public void deleteUserById(String id);
+	public String generateNewToken(String uid) throws Exception;
 }

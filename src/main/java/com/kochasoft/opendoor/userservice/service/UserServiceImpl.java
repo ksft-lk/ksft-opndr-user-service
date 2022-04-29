@@ -1,15 +1,21 @@
 package com.kochasoft.opendoor.userservice.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.client.RestTemplate;
 
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.Query;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.cloud.FirestoreClient;
 import com.kochasoft.opendoor.userservice.domain.Status;
 import com.kochasoft.opendoor.userservice.domain.User;
@@ -26,10 +32,13 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	CardService cardService;
+	
+	@Value("${firebase-api-key}")
+	String firebaseWebAPIKey;
 
 	@Override
 	@Transactional
-	public User createUser(User user,boolean createCard, String token) {
+	public User createUser(User user,boolean createCard) throws Exception{
 		User savedUser=repository.save(user).block();
 
 
@@ -39,6 +48,9 @@ public class UserServiceImpl implements UserService {
 		if(savedUser==null){
 			return null;
 		}
+
+		//creating token
+		String token = generateNewToken(savedUser.getUuid());
 
 		CardDTO cardDto=new CardDTO();
 
@@ -86,6 +98,26 @@ public class UserServiceImpl implements UserService {
 	public User findByUuid(String uuid, Status status){
 
 		return repository.findByUuidAndStatus(uuid, status).block();
+	}
+
+
+	@Override
+	public String generateNewToken(String uid) throws Exception{
+
+		Map<String, Object> params = new HashMap<>();
+		String customtoken = FirebaseAuth.getInstance().createCustomToken(uid);
+
+		params.put("token", customtoken);
+		params.put("returnSecureToken", true);
+
+		LinkedHashMap<String, Object> postForObject = new RestTemplate().postForObject(
+				"https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyCustomToken?key="
+						+ firebaseWebAPIKey,
+				params, LinkedHashMap.class);
+
+		return postForObject==null?"":postForObject.get("idToken").toString();
+
+		
 	}
 
 }

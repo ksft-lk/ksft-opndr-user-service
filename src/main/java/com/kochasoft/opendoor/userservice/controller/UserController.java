@@ -72,7 +72,7 @@ public class UserController {
 
 	@PostMapping("/users")
 	@CrossOrigin
-	public ResponseEntity<ResponseDTO> registerUser(@RequestBody UserDTO userDTO, @RequestHeader("Authorization") String token) {
+	public ResponseEntity<ResponseDTO> registerUser(@RequestBody UserDTO userDTO) {
 		try {
 			
 			//Validation
@@ -111,7 +111,7 @@ public class UserController {
 			user.setCreatedAt(epochMilli);
 			user.setCreatedBy("APP");
 			
-			User createUser = userService.createUser(user,true,token);
+			User createUser = userService.createUser(user,true);
 
 			//create basic card
 			CardDTO cardDTO=new CardDTO();
@@ -153,7 +153,7 @@ public class UserController {
 			}
 
 			if(hasAnyUpdate)
-				userService.createUser(existingUser,false,null);
+				userService.createUser(existingUser,false);
 			
 
 			return ResponseEntity.ok(ResponseDTO.success(existingUser));
@@ -210,7 +210,7 @@ public class UserController {
 			}
 
 			if(hasAnyUpdate)
-				userService.createUser(existingUser,false,null);
+				userService.createUser(existingUser,false);
 			
 
 			return ResponseEntity.ok(ResponseDTO.success(existingUser));
@@ -304,23 +304,9 @@ public class UserController {
 
 	@GetMapping("/users/{uid}/token")
 	public String getNewToken(@PathVariable String uid) {
-		Map<String, Object> params = new HashMap<>();
-		String customtoken;
 		try {
-			customtoken = FirebaseAuth.getInstance().createCustomToken(uid);
-
-			params.put("token", customtoken);
-			params.put("returnSecureToken", true);
-
-			LinkedHashMap<String, Object> postForObject = new RestTemplate().postForObject(
-					"https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyCustomToken?key="
-							+ firebaseWebAPIKey,
-					params, LinkedHashMap.class);
-
-			return postForObject.get("idToken").toString();
-
+			return userService.generateNewToken(uid);
 		} catch (Exception e) {
-			
 			e.printStackTrace();
 			return e.getMessage();
 		}
