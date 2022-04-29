@@ -29,7 +29,7 @@ public class CardServiceImpl implements CardService {
         // ResponseEntity<ResponseDTO> responseDto =
         // new RestTemplate().exchange(interactionServiceUrl+"/v1/cards", HttpMethod.POST, entity, ResponseDTO.class, cardDto);
 
-        ResponseEntity<ResponseDTO> responseDto = new RestTemplate().postForEntity(interactionServiceUrl+"/v1/cards", entity, ResponseDTO.class);
+        ResponseEntity<ResponseDTO> responseDto = new RestTemplate().postForEntity(interactionServiceUrl+"/v1/cards", entity, ResponseDTO.class, cardDto);
 
        return (CardDTO)responseDto.getBody().getResult();
     }
