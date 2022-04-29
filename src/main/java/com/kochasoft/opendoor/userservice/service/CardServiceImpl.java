@@ -22,7 +22,7 @@ public class CardServiceImpl implements CardService {
     String interactionServiceUrl;
     
     @Override
-    public CardDTO createCard(CardDTO cardDto,String token)  throws Exception{
+    public void createCard(CardDTO cardDto,String token)  throws Exception{
 
         final HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", token);
@@ -37,7 +37,7 @@ public class CardServiceImpl implements CardService {
 
         ResponseEntity<ResponseDTO> responseDto = new RestTemplate().postForEntity(interactionServiceUrl+"/v1/cards", entity, ResponseDTO.class, cardDto);
 
-       return (CardDTO)responseDto.getBody().getResult();
+      
     }
     
 }
