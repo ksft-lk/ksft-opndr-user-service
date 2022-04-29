@@ -1,8 +1,13 @@
 package com.kochasoft.opendoor.userservice.service;
 
 import com.kochasoft.opendoor.userservice.dto.CardDTO;
+import com.kochasoft.opendoor.userservice.dto.ResponseDTO;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -14,8 +19,18 @@ public class CardServiceImpl implements CardService {
     String interactionServiceUrl;
     
     @Override
-    public CardDTO createCard(CardDTO cardDto) {
-       return new RestTemplate().postForObject(interactionServiceUrl+"/v1/cards", cardDto, CardDTO.class);
+    public CardDTO createCard(CardDTO cardDto,String token) {
+
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", token);
+  
+        final HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
+  
+  
+        ResponseEntity<ResponseDTO> responseDto =
+        new RestTemplate().exchange(interactionServiceUrl+"/v1/cards", HttpMethod.POST, entity, ResponseDTO.class, cardDto);
+
+       return (CardDTO)responseDto.getBody().getResult();
     }
     
 }

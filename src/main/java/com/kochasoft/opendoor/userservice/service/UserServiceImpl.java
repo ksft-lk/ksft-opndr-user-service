@@ -3,6 +3,7 @@ package com.kochasoft.opendoor.userservice.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.List;
 
@@ -28,9 +29,13 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	@Transactional
-	public User createUser(User user) {
+	public User createUser(User user,boolean createCard, String token) {
 		User savedUser=repository.save(user).block();
 
+
+		if(!createCard){
+			return savedUser;
+		}
 		if(savedUser==null){
 			return null;
 		}
@@ -49,7 +54,7 @@ public class UserServiceImpl implements UserService {
 		cardDto.setSubTitle(subTitle);
 		cardDto.setExpiration(0);
 		cardDto.setAvatar(savedUser.getAvatar());
-		cardService.createCard(cardDto);
+		cardService.createCard(cardDto,token);
 
 		return savedUser;
 	}

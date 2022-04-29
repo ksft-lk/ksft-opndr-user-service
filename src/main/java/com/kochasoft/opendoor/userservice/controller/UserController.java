@@ -72,10 +72,20 @@ public class UserController {
 
 	@PostMapping("/users")
 	@CrossOrigin
-	public ResponseEntity<ResponseDTO> registerUser(@RequestBody UserDTO userDTO) {
+	public ResponseEntity<ResponseDTO> registerUser(@RequestBody UserDTO userDTO, @RequestHeader("Authorization") String token) {
 		try {
 			
 			//Validation
+			if(userDTO.getMobileNumber()==null){
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+						.body(ResponseDTO.failed(ResponseStatusCode.FAIL,"Mobile Number","Enter Mobile Number"));
+			}else if(userDTO.getName()==null){
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+						.body(ResponseDTO.failed(ResponseStatusCode.FAIL,"Name","Enter Name"));
+			}else if(userDTO.getMobileCountryCode()==null){
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+						.body(ResponseDTO.failed(ResponseStatusCode.FAIL,"Mobile","Enter Mobile country code"));
+			}
 			
 			String mobileNumber = userDTO.getMobileNumber();
 			Pattern pattern = Pattern.compile("^\\d{5,15}$");
@@ -101,7 +111,7 @@ public class UserController {
 			user.setCreatedAt(epochMilli);
 			user.setCreatedBy("APP");
 			
-			User createUser = userService.createUser(user);
+			User createUser = userService.createUser(user,true,token);
 
 			//create basic card
 			CardDTO cardDTO=new CardDTO();
@@ -143,7 +153,7 @@ public class UserController {
 			}
 
 			if(hasAnyUpdate)
-				userService.createUser(existingUser);
+				userService.createUser(existingUser,false,null);
 			
 
 			return ResponseEntity.ok(ResponseDTO.success(existingUser));
@@ -200,7 +210,7 @@ public class UserController {
 			}
 
 			if(hasAnyUpdate)
-				userService.createUser(existingUser);
+				userService.createUser(existingUser,false,null);
 			
 
 			return ResponseEntity.ok(ResponseDTO.success(existingUser));

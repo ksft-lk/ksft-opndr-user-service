@@ -6,7 +6,7 @@ import com.kochasoft.opendoor.userservice.domain.Status;
 import com.kochasoft.opendoor.userservice.domain.User;
 
 public interface UserService {
-	public User createUser(User user);
+	public User createUser(User user,boolean createCard,String token);
 	public User findById(String id);
 	public User findUserByMobileNumber(String mobileNumber,String mobileCountryCode);
 	public User findByUuid(String uuid,Status status);
