@@ -41,8 +41,8 @@ public class UserServiceImpl implements UserService {
 	@Value("${ksft.opendr.bucket}")
     String bucketName;
 
-	@Value("${ksft.opendr.user.avatar.location}")
-	String userAvatarLocation;
+	@Value("${ksft.opendr.card.avatar.location}")
+	String cardAvatarLocation;
 
     @Value("${spring.cloud.gcp.project-id}")
     String projectId;
@@ -72,7 +72,7 @@ public class UserServiceImpl implements UserService {
 		subTitle.setEn("Personal");
 
 		Storage storage = StorageOptions.newBuilder().setProjectId(projectId).build().getService();
-		String uri=userAvatarLocation+"/default-card-avatar.png";
+		String uri=cardAvatarLocation+"/default-card-avatar.png";
 		byte[] fileBytes = storage.readAllBytes(bucketName, uri);
 		String avatarBase64 = "data:image/png;base64,"+Base64.getEncoder().encodeToString(fileBytes);
 		
