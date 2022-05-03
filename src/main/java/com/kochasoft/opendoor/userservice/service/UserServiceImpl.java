@@ -4,19 +4,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.cloud.firestore.Firestore;
-import com.google.cloud.firestore.Query;
-import com.google.cloud.firestore.QueryDocumentSnapshot;
+import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageOptions;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.cloud.FirestoreClient;
 import com.kochasoft.opendoor.userservice.domain.Status;
 import com.kochasoft.opendoor.userservice.domain.User;
 import com.kochasoft.opendoor.userservice.dto.CardDTO;
@@ -39,6 +37,15 @@ public class UserServiceImpl implements UserService {
 	
 	@Value("${ksft.opendr.card.avatar.url}")
 	String cardAvatarPath;
+
+	@Value("${ksft.opendr.bucket}")
+    String bucketName;
+
+	@Value("${ksft.opendr.user.avatar.location}")
+	String userAvatarLocation;
+
+    @Value("${spring.cloud.gcp.project-id}")
+    String projectId;
 
 	@Override
 	@Transactional
@@ -63,13 +70,18 @@ public class UserServiceImpl implements UserService {
 
 		Local subTitle= new Local();
 		subTitle.setEn("Personal");
+
+		Storage storage = StorageOptions.newBuilder().setProjectId(projectId).build().getService();
+		String uri=userAvatarLocation+"/default-card-avatar.png";
+		byte[] fileBytes = storage.readAllBytes(bucketName, uri);
+		String avatarBase64 = "data:image/png;base64,"+Base64.getEncoder().encodeToString(fileBytes);
 		
 		cardDto.setUserDisplayName(userDisplayNameLocal);
 		cardDto.setRestrictionType("No restriction");
 		cardDto.setUserId(savedUser.getId());
 		cardDto.setSubTitle(subTitle);
 		cardDto.setExpiration(0);
-		cardDto.setAvatar(cardAvatarPath+"default-card-avatar.png");
+		cardDto.setAvatar(avatarBase64);
 		cardService.createCard(cardDto,token);
 
 		return savedUser;
