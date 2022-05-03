@@ -82,6 +82,7 @@ public class UserServiceImpl implements UserService {
 		cardDto.setSubTitle(subTitle);
 		cardDto.setExpiration(0);
 		cardDto.setAvatar(avatarBase64);
+		cardDto.setStatus(Status.ACTIVE);
 		cardService.createCard(cardDto,token);
 
 		return savedUser;
