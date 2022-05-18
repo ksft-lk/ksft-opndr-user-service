@@ -1,5 +1,5 @@
 runtime: java11
-instance_class: F2
+instance_class: B2
 service: ksft-opendr-user-service-uat
 env_variables:
   SERVICE_NAME: "ksft-opendr-user-service"

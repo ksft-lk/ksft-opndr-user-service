@@ -43,6 +43,11 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter{
             "/v1/users/id/**",
             "/v1/users/mobile/**",
             "/health",
+            "/actuator/**",
+            "/_ah/health",
+            "/swagger-ui/**",
+            "/v3/**",
+            "/v2/**",
             "/liveness_check",
             "/_ah/start");
         web.ignoring().antMatchers(HttpMethod.GET,"/v1/users").antMatchers(HttpMethod.POST,"/v1/users");
