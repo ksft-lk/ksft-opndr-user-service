@@ -1,9 +1,5 @@
 runtime: java11
-instance_class: B2
+instance_class: F2
 service: ksft-opendr-user-service-uat
-health_check:
-  enable_health_check: False
 env_variables:
   SERVICE_NAME: "ksft-opendr-user-service"
-manual_scaling:
-  instances: 1
